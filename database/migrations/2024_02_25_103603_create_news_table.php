@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('img');
             $table->string('content');
             $table->date('dateOfNews');
+            $table->timestamps();
         });
     }
 

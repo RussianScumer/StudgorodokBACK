@@ -8,4 +8,12 @@ use Illuminate\Database\Eloquent\Model;
 class Tokens extends Model
 {
     use HasFactory;
+
+    /**
+     * @var mixed|string
+     */
+    protected $table = "tokens";
+    protected $fillable=[
+       'acctoken'
+    ];
 }

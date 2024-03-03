@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('img');
             $table->string('stud_number');
             $table->string('sender_name');
+            $table->timestamps();
         });
     }
 

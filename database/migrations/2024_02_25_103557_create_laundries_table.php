@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('laundries', function (Blueprint $table) {
             $table->id()->autoIncrement();
             $table->boolean('status');
+            $table->timestamps();
         });
     }
 
