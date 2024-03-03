@@ -14,6 +14,7 @@ class AuthOrioks extends Controller
          $token = new Tokens();
          $token->acctoken = $accToken;
          $token->save();
-         echo $token;
+         echo "token:";
+         echo $token->acctoken;
 }
 }
