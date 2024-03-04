@@ -3,9 +3,10 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Tokens;
 use Illuminate\Http\Request;
 
-class TokenController extends Controller
+class TokenAction extends Controller
 {
 
 }

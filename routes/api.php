@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\Api\AuthOrioks;
+use App\Http\Controllers\Api\AuthOrioksController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -19,4 +19,5 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::get('/token', [AuthOrioks::class, 'getToken']);
+
+Route::post('/authtorize', [AuthOrioksController::class, 'store']);
