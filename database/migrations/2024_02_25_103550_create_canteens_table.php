@@ -13,6 +13,10 @@ return new class extends Migration
     {
         Schema::create('canteens', function (Blueprint $table) {
             $table->id()->autoIncrement();
+            $table->string('title');
+            $table->string('type');
+            $table->double("price");
+            $table->string('img');
             $table->timestamps();
         });
     }
