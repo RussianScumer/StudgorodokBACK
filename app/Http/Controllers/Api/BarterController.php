@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Barter;
 use Illuminate\Http\Request;
 
 class BarterController extends Controller
@@ -12,7 +13,7 @@ class BarterController extends Controller
      */
     public function index()
     {
-        //
+        return Barter::all();
     }
 
     /**
