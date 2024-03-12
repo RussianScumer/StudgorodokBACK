@@ -21,3 +21,8 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 
 Route::post('/authtorize', [AuthOrioksController::class, 'store']);
+Route::get('/news', [\App\Http\Controllers\Api\NewsController::class, 'index']);
+Route::post('/news', [\App\Http\Controllers\Api\NewsController::class, 'store']);
+Route::put('/news/{id}',[\App\Http\Controllers\Api\NewsController::class, 'update']);
+Route::get('/news/{id}', [\App\Http\Controllers\Api\NewsController::class, 'show']);
+Route::delete('/news/{id}', [\App\Http\Controllers\Api\NewsController::class, 'destroy']);
