@@ -20,24 +20,24 @@ class NewsController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(Request $request): \Illuminate\Http\JsonResponse
     {
         $news = new News();
         $news->title = $request->get("title");
+        $news->content = $request->get("content");
         $news->img = $request->get("img");
         $news->setImage($news, $request);
         $currentDateTime = new DateTime('now');
         $currentDate = $currentDateTime->format('Y-m-d');
         $news->dateOfNews = $currentDate;
-        $news->content = $request->get("content");
         $news->save();
-        return "successful";
+        return response()->json(['status' => 'success']);
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(string $id): string
     {
         $news = News::find($id);
         return "successful";
@@ -46,28 +46,33 @@ class NewsController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, string $id): \Illuminate\Http\JsonResponse
     {
         $news = News::find($id);
-        //return $news;
         $news->title = $request->get("title");
-        $news->img = $request->get("img");
+        if ($request->get("img") != "unchanged") {
+            $news->img = $request->get("img");
+        }
         $news->setImage($news, $request);
         $currentDateTime = new DateTime('now');
         $currentDate = $currentDateTime->format('Y-m-d');
         $news->dateOfNews = $currentDate;
         $news->content = $request->get("content");
         $news->save();
-        return "successful";
+        return response()->json(['status' => 'success']);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(string $id): \Illuminate\Http\JsonResponse
     {
         $news = News::find($id);
-        $news->forceDelete();
-        return "successful";
+        if ($news) {
+            $news->forceDelete();
+            return response()->json(['status' => 'success', 'message' => 'News successfully deleted']);
+        } else {
+            return response()->json(['status' => 'error', 'message' => 'News not found'], 404);
+        }
     }
 }

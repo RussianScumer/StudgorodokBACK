@@ -22,10 +22,12 @@ class AuthOrioksController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(Request $request): \Illuminate\Http\JsonResponse|OrioksUser
     {
-        $user = $request->json();
-        $resultString = $user->get("username"). ':' .$user->get("password");
+        $requestData = $request->all(); // Получаем все данные запроса
+        $username = $requestData['username'] ?? null; // Получаем имя пользователя
+        $password = $requestData['password'] ?? null; // Получаем пароль
+        $resultString = $username. ':' .$password;
         $api_url = 'https://orioks.miet.ru/api/v1/auth';
         $encoded_auth = base64_encode($resultString);
         $headers = array(
@@ -37,10 +39,10 @@ class AuthOrioksController extends Controller
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         $tokenOrioks = curl_exec($ch);
+        curl_close($ch);
         $api_url2 = 'https://orioks.miet.ru/api/v1/student';
         if ($tokenOrioks === false) {
-            echo 'Ошибка cURL: ' . curl_error($ch);
-            return null;
+            return response()->json(['error' => 'Ошибка: токен не найден.'], 500);
         } else {
             $decoded_response = json_decode($tokenOrioks, true); // Парсинг JSON
             if (isset($decoded_response['token'])) {
@@ -54,24 +56,23 @@ class AuthOrioksController extends Controller
                 curl_setopt($ch2, CURLOPT_HTTPHEADER, $headersNew);
                 curl_setopt($ch2, CURLOPT_RETURNTRANSFER, true);
                 $response = curl_exec($ch2);
+                curl_close($ch2);
                 $decoded_response2 = json_decode($response, true);
                 $orioksUser = New OrioksUser();
                 $orioksUser->fullName = $decoded_response2['full_name'];
                 $orioksUser->group = $decoded_response2['group'];
-                if($user->has("token")){
-                    $orioksUser->token = $user->get("token");
+                if(isset($requestData['token']) && $requestData['token'] != null) {
+                    $orioksUser->token = $requestData['token'];
                 }else{
                     $token = new Tokens();
                     $token->getToken($token);
                     $orioksUser->token = $token->acctoken;
                 }
-                curl_close($ch);
                 return $orioksUser;
             } else {
-                echo "The response does not contain a token field.";
+                return response()->json(['error' => 'Ошибка: не удалось получить токен.'], 500);
             }
         }
-        curl_close($ch);
     }
 
     /**
