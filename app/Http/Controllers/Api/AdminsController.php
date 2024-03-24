@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Admins;
+use http\Env\Response;
 use Illuminate\Http\Request;
 
 class AdminsController extends Controller
@@ -11,9 +12,15 @@ class AdminsController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request): \Illuminate\Http\JsonResponse
     {
-        //
+        $user = $request->get("user");
+        if (Admins::where("users", $user)->exists()) {
+            return response()->json(['status' => 'admin']);
+        }
+        else {
+            return response()->json(['status' => 'user']);
+        }
     }
 
     /**

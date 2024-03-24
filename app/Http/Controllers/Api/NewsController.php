@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Admins;
 use App\Models\News;
 use DateTime;
 use Illuminate\Http\Request;
@@ -14,7 +15,7 @@ class NewsController extends Controller
      */
     public function index()
     {
-       return News::all();
+        return News::latest()->take(10)->get();
     }
 
     /**
@@ -22,16 +23,22 @@ class NewsController extends Controller
      */
     public function store(Request $request): \Illuminate\Http\JsonResponse
     {
-        $news = new News();
-        $news->title = $request->get("title");
-        $news->content = $request->get("content");
-        $news->img = $request->get("img");
-        $news->setImage($news, $request);
-        $currentDateTime = new DateTime('now');
-        $currentDate = $currentDateTime->format('Y-m-d');
-        $news->dateOfNews = $currentDate;
-        $news->save();
-        return response()->json(['status' => 'success']);
+        $user = $request->get("user");
+        if (Admins::where("users", $user)->exists()) {
+            $news = new News();
+            $news->title = $request->get("title");
+            $news->content = $request->get("content");
+            $news->img = $request->get("img");
+            $news->setImage($news, $request);
+            $currentDateTime = new DateTime('now');
+            $currentDate = $currentDateTime->format('Y-m-d');
+            $news->dateOfNews = $currentDate;
+            $news->save();
+            return response()->json(['status' => 'success']);
+        }
+        else {
+            return response()->json(['status' => 'fail']);
+        }
     }
 
     /**
@@ -48,31 +55,44 @@ class NewsController extends Controller
      */
     public function update(Request $request, string $id): \Illuminate\Http\JsonResponse
     {
-        $news = News::find($id);
-        $news->title = $request->get("title");
-        if ($request->get("img") != "unchanged") {
-            $news->img = $request->get("img");
+        $user = $request->get("user");
+        if (Admins::where("users", $user)->exists()) {
+            $news = News::find($id);
+            $news->title = $request->get("title");
+            if ($request->get("img") != "unchanged") {
+                // TODO: Удалить старую картинку из storage
+                $news->img = $request->get("img");
+                $news->setImage($news, $request);
+            }
+            $currentDateTime = new DateTime('now');
+            $currentDate = $currentDateTime->format('Y-m-d');
+            $news->dateOfNews = $currentDate;
+            $news->content = $request->get("content");
+            $news->save();
+            return response()->json(['status' => 'success']);
         }
-        $news->setImage($news, $request);
-        $currentDateTime = new DateTime('now');
-        $currentDate = $currentDateTime->format('Y-m-d');
-        $news->dateOfNews = $currentDate;
-        $news->content = $request->get("content");
-        $news->save();
-        return response()->json(['status' => 'success']);
+        else {
+            return response()->json(['status' => 'fail']);
+        }
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id): \Illuminate\Http\JsonResponse
+    public function destroy(string $id, string $user): \Illuminate\Http\JsonResponse
     {
-        $news = News::find($id);
-        if ($news) {
-            $news->forceDelete();
-            return response()->json(['status' => 'success', 'message' => 'News successfully deleted']);
-        } else {
-            return response()->json(['status' => 'error', 'message' => 'News not found'], 404);
+        if (Admins::where("users", $user)->exists()) {
+            $news = News::find($id);
+            if ($news) {
+                $news->forceDelete();
+                // TODO: Удалить старую картинку из storage
+                return response()->json(['status' => 'success', 'message' => 'News successfully deleted']);
+            } else {
+                return response()->json(['status' => 'error', 'message' => 'News not found'], 404);
+            }
+        }
+        else {
+            return response()->json(['status' => 'error', 'message' => 'No admin rights'], 401);
         }
     }
 }

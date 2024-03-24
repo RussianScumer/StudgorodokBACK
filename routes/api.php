@@ -21,11 +21,12 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 
 Route::post('/authtorize', [AuthOrioksController::class, 'store']);
+
 Route::get('/news', [\App\Http\Controllers\Api\NewsController::class, 'index']);
 Route::post('/news', [\App\Http\Controllers\Api\NewsController::class, 'store']);
 Route::put('/news/{id}',[\App\Http\Controllers\Api\NewsController::class, 'update']);
 Route::get('/news/{id}', [\App\Http\Controllers\Api\NewsController::class, 'show']);
-Route::delete('/news/{id}', [\App\Http\Controllers\Api\NewsController::class, 'destroy']);
+Route::delete('/news/{id}/{user}', [\App\Http\Controllers\Api\NewsController::class, 'destroy']);
 
 Route::get('/barter', [\App\Http\Controllers\Api\BarterController::class, 'index']);
 Route::post('/barter', [\App\Http\Controllers\Api\BarterController::class, 'store']);
