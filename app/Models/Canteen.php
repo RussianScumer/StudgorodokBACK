@@ -18,15 +18,15 @@ class Canteen extends Model
         'price',
         'img'
     ];
-    public function setImage($barter, $request)
+    public function setImage($canteen, $request)
     {
         $currentDateTime = new DateTime('now');
-        if ($barter->img != "" && $barter->img != "unchanged") {
-            $imgToSave = $barter->img;
-            $barter->img = "/home/a0872478/domains/a0872478.xsph.ru/Canteen_img/" . $currentDateTime->format('Y-m-d_H-i-s') . $request->get("extension");
-            file_put_contents($barter->img, base64_decode($imgToSave));
+        if ($canteen->img != "" && $canteen->img != "unchanged") {
+            $imgToSave = $canteen->img;
+            $canteen->img = "/home/a0872478/domains/a0872478.xsph.ru/Canteen_img/" . $currentDateTime->format('Y-m-d_H-i-s') . $request->get("extension");
+            file_put_contents($canteen->img, base64_decode($imgToSave));
         } else {
-            $barter->img = "";
+            $canteen->img = "";
         }
     }
 }

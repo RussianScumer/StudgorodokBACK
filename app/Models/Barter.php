@@ -12,13 +12,14 @@ class Barter extends Model
     protected $table = "barters";
 
     protected $fillable = [
-      'title',
+        'title',
         'comments',
         'contacts',
         'price',
         'img',
         'stud_number',
-        'sender_name'
+        'sender_name',
+        'suggested'
     ];
     public function setImage($barter, $request)
     {

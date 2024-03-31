@@ -7,6 +7,7 @@ use App\Models\Barter;
 use App\Models\Canteen;
 use App\Models\News;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rules\Can;
 
 class CanteenController extends Controller{
 
@@ -58,7 +59,6 @@ class CanteenController extends Controller{
         //////////////////////
         $canteen->price = $request->get("price");
         $canteen->type = $request->get("type");
-
         $canteen->save();
         return "successful";
     }
@@ -68,7 +68,7 @@ class CanteenController extends Controller{
      */
     public function destroy(string $id)
     {
-        $canteen = Barter::find($id);
+        $canteen = Canteen::find($id);
         $canteen->forceDelete();
         return "successful";
     }

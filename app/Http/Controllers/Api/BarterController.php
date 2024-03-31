@@ -33,12 +33,12 @@ class BarterController extends Controller
         $barter->title = $request->get("title");
         $barter->img = $request->get("img");
         $barter->setImage($barter, $request);
-       //////////////////////
         $barter->comments = $request->get("comments");
         $barter->contacts = $request->get("contacts");
         $barter->price = $request->get("price");
         $barter->stud_number = $request->get("stud_number");
         $barter->sender_name = $request->get("sender_name");
+        $barter->suggested = $request->get("suggested");
         $barter->save();
         return "successful";
     }
@@ -68,6 +68,7 @@ class BarterController extends Controller
         $barter->price = $request->get("price");
         $barter->stud_number = $request->get("stud_number");
         $barter->sender_name = $request->get("sender_name");
+        $barter->suggested = $request->get("suggested");
         $barter->save();
         return "successful";
     }
@@ -79,6 +80,12 @@ class BarterController extends Controller
     {
         $barter = Barter::find($id);
         $barter->forceDelete();
+        return "successful";
+    }
+    public function updateAdmin(Request $request, $id)
+    {
+        $barter = Barter::find($id);
+        $barter->suggested = $request->get("suggested");
         return "successful";
     }
 }

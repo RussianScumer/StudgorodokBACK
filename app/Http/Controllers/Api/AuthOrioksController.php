@@ -49,7 +49,6 @@ class AuthOrioksController extends Controller
                     'Authorization: Bearer ' . $decoded_response['token'],
                     'User-Agent: TestApiAPP/0.1 Windows 10',
                 ];
-
                 $ch2 = curl_init($api_url2);
                 curl_setopt($ch2, CURLOPT_HTTPHEADER, $headersNew);
                 curl_setopt($ch2, CURLOPT_RETURNTRANSFER, true);

@@ -3,7 +3,7 @@
 use App\Http\Controllers\Api\AuthOrioksController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-
+use App\Http\Controllers\Api\StorageController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -21,6 +21,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 
 Route::post('/authtorize', [AuthOrioksController::class, 'store']);
+
 Route::get('/news', [\App\Http\Controllers\Api\NewsController::class, 'index']);
 Route::post('/news', [\App\Http\Controllers\Api\NewsController::class, 'store']);
 Route::put('/news/{id}',[\App\Http\Controllers\Api\NewsController::class, 'update']);
@@ -38,3 +39,7 @@ Route::post('/canteen', [\App\Http\Controllers\Api\CanteenController::class, 'st
 Route::put('/canteen/{id}',[\App\Http\Controllers\Api\CanteenController::class, 'update']);
 Route::get('/canteen/{id}', [\App\Http\Controllers\Api\CanteenController::class, 'show']);
 Route::delete('/canteen/{id}', [\App\Http\Controllers\Api\CanteenController::class, 'destroy']);
+
+Route::post('/admin', [\App\Http\Controllers\Api\AdminsController::class, 'index']);
+
+Route::get('/storage/{filename}', '\App\Http\Controllers\Api\StorageController@getImage')->where('filename', '(.*)');

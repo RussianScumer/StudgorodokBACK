@@ -3,9 +3,11 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Answer;
 use App\Models\News;
 use DateTime;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\App;
 
 class NewsController extends Controller
 {
@@ -14,6 +16,9 @@ class NewsController extends Controller
      */
     public function index()
     {
+        if(News::all()->isEmpty()){
+            //App::abort(404);
+        }
        return News::all();
     }
 
@@ -31,7 +36,9 @@ class NewsController extends Controller
         $news->dateOfNews = $currentDate;
         $news->content = $request->get("content");
         $news->save();
-        return "successful";
+        $answer = New Answer();
+        $answer->status = "success";
+        return $answer;
     }
 
     /**
