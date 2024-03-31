@@ -46,8 +46,11 @@ class NewsController extends Controller
      */
     public function show(string $id): string
     {
-        $news = News::find($id);
-        return "successful";
+        if ($id == 0) {
+            return News::latest()->take(10)->get();
+        } else {
+            return News::where('id', '<', (int)$id)->orderBy('id', 'desc')->take(10)->get();
+        }
     }
 
     /**

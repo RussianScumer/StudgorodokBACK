@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Storage;
 
 class StorageController extends Controller
 {
-    public function getImage($filename)
+    public function getImage($filename): \Symfony\Component\HttpFoundation\BinaryFileResponse
     {
         $filePath = storage_path('app/public/' . $filename); // путь к файлу в папке storage/app/public/
 

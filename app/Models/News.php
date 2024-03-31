@@ -14,7 +14,7 @@ class News extends Model
     protected $table = "news";
 
     protected $fillable = [
-       'title',
+        'title',
         'img',
         'content',
         'dateOfNews'
@@ -24,8 +24,9 @@ class News extends Model
         $currentDateTime = new DateTime('now');
         if ($news->img != "" && $news->img != "unchanged") {
             $imgToSave = $news->img;
-            $news->img = "/home/a0872478/domains/a0872478.xsph.ru/news_img/" . $currentDateTime->format('Y-m-d_H-i-s') . $request->get("extension");
+            $news->img = "/home/a0872478/domains/a0872478.xsph.ru/laravel_project/storage/app/public/" . $currentDateTime->format('Y-m-d_H-i-s') . $request->get("extension");
             file_put_contents($news->img, base64_decode($imgToSave));
+            $news->img = "http://a0872478.xsph.ru/api/storage/" . $currentDateTime->format('Y-m-d_H-i-s') . $request->get("extension");
         } else {
             $news->img = "";
         }

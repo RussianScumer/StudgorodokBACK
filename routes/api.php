@@ -24,21 +24,21 @@ Route::post('/authtorize', [AuthOrioksController::class, 'store']);
 
 Route::get('/news', [\App\Http\Controllers\Api\NewsController::class, 'index']);
 Route::post('/news', [\App\Http\Controllers\Api\NewsController::class, 'store']);
-Route::put('/news/{id}',[\App\Http\Controllers\Api\NewsController::class, 'update']);
+Route::put('/news/{id}', [\App\Http\Controllers\Api\NewsController::class, 'update']);
 Route::get('/news/{id}', [\App\Http\Controllers\Api\NewsController::class, 'show']);
 Route::delete('/news/{id}/{user}', [\App\Http\Controllers\Api\NewsController::class, 'destroy']);
 
 Route::get('/barter', [\App\Http\Controllers\Api\BarterController::class, 'index']);
 Route::post('/barter', [\App\Http\Controllers\Api\BarterController::class, 'store']);
-Route::put('/barter/{id}',[\App\Http\Controllers\Api\BarterController::class, 'update']);
+Route::put('/barter/{id}', [\App\Http\Controllers\Api\BarterController::class, 'update']);
 Route::get('/barter/{id}', [\App\Http\Controllers\Api\BarterController::class, 'show']);
 Route::delete('/barter/{id}', [\App\Http\Controllers\Api\BarterController::class, 'destroy']);
 
 Route::get('/canteen', [\App\Http\Controllers\Api\CanteenController::class, 'index']);
 Route::post('/canteen', [\App\Http\Controllers\Api\CanteenController::class, 'store']);
-Route::put('/canteen/{id}',[\App\Http\Controllers\Api\CanteenController::class, 'update']);
+Route::put('/canteen/{id}', [\App\Http\Controllers\Api\CanteenController::class, 'update']);
 Route::get('/canteen/{id}', [\App\Http\Controllers\Api\CanteenController::class, 'show']);
-Route::delete('/canteen/{id}', [\App\Http\Controllers\Api\CanteenController::class, 'destroy']);
+Route::delete('/canteen/{id}/{user}', [\App\Http\Controllers\Api\CanteenController::class, 'destroy']);
 
 Route::post('/admin', [\App\Http\Controllers\Api\AdminsController::class, 'index']);
 
