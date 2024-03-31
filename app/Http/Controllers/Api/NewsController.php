@@ -63,6 +63,7 @@ class NewsController extends Controller
             $news = News::find($id);
             $news->title = $request->get("title");
             if ($request->get("img") != "unchanged") {
+                $news->deleteImage($news);
                 // TODO: Удалить старую картинку из storage
                 $news->img = $request->get("img");
                 $news->setImage($news, $request);

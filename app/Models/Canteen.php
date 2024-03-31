@@ -5,6 +5,7 @@ namespace App\Models;
 use DateTime;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 
 class Canteen extends Model
 {
@@ -29,6 +30,13 @@ class Canteen extends Model
         } else {
             $canteen->img = "";
         }
+    }
+    public function deleteImage($canteen)
+    {
+        $imgToDelete = $canteen->img();
+        $imgToDelete = str_replace("http://a0872478.xsph.ru/api/storage/", "", $imgToDelete);
+        $imgToDelete = "/home/a0872478/domains/a0872478.xsph.ru/laravel_project/storage/app/public/" . $imgToDelete;
+        Storage::delete($imgToDelete);
     }
 }
 
