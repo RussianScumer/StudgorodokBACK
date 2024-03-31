@@ -6,6 +6,7 @@ use DateTime;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Storage;
 
 class News extends Model
 {
@@ -30,5 +31,12 @@ class News extends Model
         } else {
             $news->img = "";
         }
+    }
+    public function deleteImage($news)
+    {
+        $imgToDelete = $news->img();
+        $imgToDelete = str_replace("http://a0872478.xsph.ru/api/storage/", "", $imgToDelete);
+        $imgToDelete = "/home/a0872478/domains/a0872478.xsph.ru/laravel_project/storage/app/public/" . $imgToDelete;
+        Storage::delete($imgToDelete);
     }
 }

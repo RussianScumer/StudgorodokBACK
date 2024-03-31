@@ -87,6 +87,7 @@ class NewsController extends Controller
         if (Admins::where("users", $user)->exists()) {
             $news = News::find($id);
             if ($news) {
+                $news->deleteImage($news);
                 $news->forceDelete();
                 // TODO: Удалить старую картинку из storage
                 return response()->json(['status' => 'success', 'message' => 'News successfully deleted']);
