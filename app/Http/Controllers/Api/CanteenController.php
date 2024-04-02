@@ -55,7 +55,7 @@ class CanteenController extends Controller
         $canteen->price = $request->get("price");
         $canteen->type = $request->get("type");
         if ($request->get("img") != "unchanged") {
-            if (!$canteen->get("img")) {
+            if (!empty($news->img)) {
                 $canteen->deleteImage($canteen);
             }
             $canteen->img = $request->get("img");
@@ -72,7 +72,7 @@ class CanteenController extends Controller
     {
         $canteen = Canteen::find($id);
         if ($canteen) {
-            if (!$canteen->get("img")) {
+            if (!empty($news->img)) {
                 $canteen->deleteImage($canteen);
             }
             $canteen->forceDelete();

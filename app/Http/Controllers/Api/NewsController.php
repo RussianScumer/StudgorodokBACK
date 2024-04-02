@@ -55,11 +55,11 @@ class NewsController extends Controller
         $news = News::find($id);
         $news->title = $request->get("title");
         if ($request->get("img") != "unchanged") {
-            if (!$news->get("img")) {
-                $news->deleteImage();
+            if (!empty($news->img)) {
+                $news->deleteImage($news);
             }
             $news->img = $request->get("img");
-            $news->setImage($request);
+            $news->setImage($news, $request);
         }
         $currentDateTime = new DateTime('now');
         $currentDate = $currentDateTime->format('Y-m-d');
@@ -76,7 +76,7 @@ class NewsController extends Controller
     {
         $news = News::find($id);
         if ($news) {
-            if (!$news->get("img")) {
+            if (!empty($news->img)) {
                 $news->deleteImage($news);
             }
             $news->forceDelete();
