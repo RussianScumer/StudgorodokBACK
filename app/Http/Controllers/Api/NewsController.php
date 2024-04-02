@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Controllers\Controller;
 use App\Models\Admins;
 use App\Models\News;
 use DateTime;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controller;
 
 class NewsController extends Controller
 {

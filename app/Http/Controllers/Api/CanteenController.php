@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Controllers\Controller;
 use App\Models\Admins;
 use App\Models\Barter;
 use App\Models\Canteen;
 use App\Models\News;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controller;
 
 class CanteenController extends Controller
 {
