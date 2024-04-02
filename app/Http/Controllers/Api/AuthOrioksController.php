@@ -2,12 +2,10 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Controllers\Controller;
 use App\Models\Tokens;
-use http\Env\Response;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Api\TokenAction;
 use App\Models\OrioksUser;
+use Illuminate\Routing\Controller;
 
 class AuthOrioksController extends Controller
 {
