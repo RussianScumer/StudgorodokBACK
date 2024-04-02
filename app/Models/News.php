@@ -5,8 +5,6 @@ namespace App\Models;
 use DateTime;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Support\Facades\Storage;
 
 class News extends Model
 {
@@ -35,8 +33,7 @@ class News extends Model
     public static function deleteImage($news): void
     {
         $imgToDelete = $news->img;
-        $imgToDelete = str_replace(env("APP_URL") . "/api/storage/", "", $imgToDelete);
-        Storage::delete($imgToDelete);
-        echo($imgToDelete);
+        $imgToDelete = str_replace(env("APP_URL") . "/api/storage/", env("APP_STORAGE_PATH"), $imgToDelete);
+        unlink($imgToDelete);
     }
 }

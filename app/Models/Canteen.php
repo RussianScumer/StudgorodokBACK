@@ -5,7 +5,6 @@ namespace App\Models;
 use DateTime;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Storage;
 
 class Canteen extends Model
 {
@@ -34,9 +33,8 @@ class Canteen extends Model
     public static function deleteImage($canteen): void
     {
         $imgToDelete = $canteen->img;
-        $imgToDelete = str_replace(env("APP_URL") . "/api/storage/", "", $imgToDelete);
-        $imgToDelete = env("APP_STORAGE_PATH") . $imgToDelete;
-        Storage::delete($imgToDelete);
+        $imgToDelete = str_replace(env("APP_URL") . "/api/storage/", env("APP_STORAGE_PATH"), $imgToDelete);
+        unlink($imgToDelete);
     }
 }
 
