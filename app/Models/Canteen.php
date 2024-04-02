@@ -31,7 +31,7 @@ class Canteen extends Model
             $canteen->img = "";
         }
     }
-    public function deleteImage($canteen)
+    public static function deleteImage($canteen)
     {
         $imgToDelete = $canteen->img;
         $imgToDelete = str_replace("http://a0872478.xsph.ru/api/storage/", "", $imgToDelete);
