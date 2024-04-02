@@ -55,7 +55,7 @@ class CanteenController extends Controller
         $canteen->price = $request->get("price");
         $canteen->type = $request->get("type");
         if ($request->get("img") != "unchanged") {
-            if (!empty($news->img)) {
+            if (!empty($canteen->img)) {
                 $canteen->deleteImage($canteen);
             }
             $canteen->img = $request->get("img");
@@ -68,11 +68,11 @@ class CanteenController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id, string $user): \Illuminate\Http\JsonResponse
+    public function destroy(string $id): \Illuminate\Http\JsonResponse
     {
         $canteen = Canteen::find($id);
         if ($canteen) {
-            if (!empty($news->img)) {
+            if (!empty($canteen->img)) {
                 $canteen->deleteImage($canteen);
             }
             $canteen->forceDelete();
