@@ -55,7 +55,9 @@ class NewsController extends Controller
         $news = News::find($id);
         $news->title = $request->get("title");
         if ($request->get("img") != "unchanged") {
-            $news->deleteImage();
+            if (!$news->get("img")) {
+                $news->deleteImage();
+            }
             $news->img = $request->get("img");
             $news->setImage($request);
         }
@@ -74,7 +76,9 @@ class NewsController extends Controller
     {
         $news = News::find($id);
         if ($news) {
-            $news->deleteImage($news);
+            if (!$news->get("img")) {
+                $news->deleteImage($news);
+            }
             $news->forceDelete();
             return response()->json(['status' => 'success', 'message' => 'News successfully deleted']);
         } else {
