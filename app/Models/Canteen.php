@@ -33,7 +33,7 @@ class Canteen extends Model
     }
     public function deleteImage($canteen)
     {
-        $imgToDelete = $canteen->img();
+        $imgToDelete = $canteen->img;
         $imgToDelete = str_replace("http://a0872478.xsph.ru/api/storage/", "", $imgToDelete);
         $imgToDelete = "/home/a0872478/domains/a0872478.xsph.ru/laravel_project/storage/app/public/" . $imgToDelete;
         Storage::delete($imgToDelete);
