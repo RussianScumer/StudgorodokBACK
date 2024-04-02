@@ -19,7 +19,7 @@ class Canteen extends Model
         'price',
         'img'
     ];
-    public function setImage($canteen, $request)
+    public function setImage($canteen, $request): void
     {
         $currentDateTime = new DateTime('now');
         if ($canteen->img != "" && $canteen->img != "unchanged") {
@@ -31,7 +31,7 @@ class Canteen extends Model
             $canteen->img = "";
         }
     }
-    public function deleteImage($canteen)
+    public static function deleteImage($canteen): void
     {
         $imgToDelete = $canteen->img;
         $imgToDelete = str_replace("http://a0872478.xsph.ru/api/storage/", "", $imgToDelete);

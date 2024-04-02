@@ -20,24 +20,23 @@ class News extends Model
         'content',
         'dateOfNews'
     ];
-    public function setImage($news, $request)
+    public function setImage($news, $request): void
     {
         $currentDateTime = new DateTime('now');
         if ($news->img != "" && $news->img != "unchanged") {
             $imgToSave = $news->img;
             $news->img = "/home/a0872478/domains/a0872478.xsph.ru/laravel_project/storage/app/public/" . $currentDateTime->format('Y-m-d_H-i-s') . $request->get("extension");
-            file_put_contents($news->img, base64_decode($imgToSave));
+            file_put_contents($this->img, base64_decode($imgToSave));
             $news->img = "http://a0872478.xsph.ru/api/storage/" . $currentDateTime->format('Y-m-d_H-i-s') . $request->get("extension");
         } else {
             $news->img = "";
         }
     }
-    public function deleteImage($news)
+    public static function deleteImage($news): void
     {
         $imgToDelete = $news->img;
         $imgToDelete = str_replace("http://a0872478.xsph.ru/api/storage/", "", $imgToDelete);
-        $imgToDelete = "/home/a0872478/domains/a0872478.xsph.ru/laravel_project/storage/app/public/" . $imgToDelete;
-
         Storage::delete($imgToDelete);
+        echo($imgToDelete);
     }
 }

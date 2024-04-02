@@ -85,8 +85,7 @@ class CanteenController extends Controller
             $canteen = Canteen::find($id);
             if ($canteen) {
                 $canteen->forceDelete();
-                Canteen::deleteImage($canteen);
-                // TODO: Удалить старую картинку из storage
+                $canteen->deleteImage($canteen);
                 return response()->json(['status' => 'success', 'message' => 'Dish successfully deleted']);
             } else {
                 return response()->json(['status' => 'error', 'message' => 'Dish not found'], 404);

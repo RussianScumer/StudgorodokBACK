@@ -58,15 +58,14 @@ class NewsController extends Controller
      */
     public function update(Request $request, string $id): \Illuminate\Http\JsonResponse
     {
-        $user = $request->get("user");
-        if (Admins::where("users", $user)->exists()) {
+        $token = $request->get("token");
+        if (Admins::where("tokens", $token)->exists()) {
             $news = News::find($id);
             $news->title = $request->get("title");
             if ($request->get("img") != "unchanged") {
-                $news->deleteImage($news);
-                // TODO: Удалить старую картинку из storage
+                $news->deleteImage();
                 $news->img = $request->get("img");
-                $news->setImage($news, $request);
+                $news->setImage($request);
             }
             $currentDateTime = new DateTime('now');
             $currentDate = $currentDateTime->format('Y-m-d');
@@ -83,21 +82,15 @@ class NewsController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id, string $user): \Illuminate\Http\JsonResponse
+    public function destroy(string $id): \Illuminate\Http\JsonResponse
     {
-        if (Admins::where("users", $user)->exists()) {
-            $news = News::find($id);
-            if ($news) {
-                $news->deleteImage($news);
-                $news->forceDelete();
-                // TODO: Удалить старую картинку из storage
-                return response()->json(['status' => 'success', 'message' => 'News successfully deleted']);
-            } else {
-                return response()->json(['status' => 'error', 'message' => 'News not found'], 404);
-            }
-        }
-        else {
-            return response()->json(['status' => 'error', 'message' => 'No admin rights'], 401);
+        $news = News::find($id);
+        if ($news) {
+            $news->deleteImage($news);
+            $news->forceDelete();
+            return response()->json(['status' => 'success', 'message' => 'News successfully deleted']);
+        } else {
+            return response()->json(['status' => 'error', 'message' => 'News not found'], 404);
         }
     }
 }
