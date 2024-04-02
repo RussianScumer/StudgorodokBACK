@@ -24,9 +24,9 @@ class Canteen extends Model
         $currentDateTime = new DateTime('now');
         if ($canteen->img != "" && $canteen->img != "unchanged") {
             $imgToSave = $canteen->img;
-            $canteen->img = "/home/a0872478/domains/a0872478.xsph.ru/laravel_project/storage/app/public/" . $currentDateTime->format('Y-m-d_H-i-s') . $request->get("extension");
+            $canteen->img = env("APP_STORAGE_PATH") . $currentDateTime->format('Y-m-d_H-i-s') . $request->get("extension");
             file_put_contents($canteen->img, base64_decode($imgToSave));
-            $canteen->img = "http://a0872478.xsph.ru/api/storage/" . $currentDateTime->format('Y-m-d_H-i-s') . $request->get("extension");
+            $canteen->img = env("APP_URL") . "/api/storage/" . $currentDateTime->format('Y-m-d_H-i-s') . $request->get("extension");
         } else {
             $canteen->img = "";
         }
@@ -34,8 +34,8 @@ class Canteen extends Model
     public static function deleteImage($canteen): void
     {
         $imgToDelete = $canteen->img;
-        $imgToDelete = str_replace("http://a0872478.xsph.ru/api/storage/", "", $imgToDelete);
-        $imgToDelete = "/home/a0872478/domains/a0872478.xsph.ru/laravel_project/storage/app/public/" . $imgToDelete;
+        $imgToDelete = str_replace(env("APP_URL") . "/api/storage/", "", $imgToDelete);
+        $imgToDelete = env("APP_STORAGE_PATH") . $imgToDelete;
         Storage::delete($imgToDelete);
     }
 }
