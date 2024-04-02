@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Controllers\Controller;
 use App\Models\Barter;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controller;
 
 class BarterController extends Controller
 {

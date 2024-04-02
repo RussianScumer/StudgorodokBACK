@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Models\Admins;
 use App\Models\News;
 use DateTime;
 use Illuminate\Http\Request;
