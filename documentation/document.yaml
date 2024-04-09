@@ -1,0 +1,421 @@
+openapi: 3.0.0
+info:
+  title: StudgorodAPI
+  version: 1.0.0
+servers:
+  - url: http://a0872478.xsph.ru/api
+tags:
+  - name: Authorize
+    description: Все пути для авторизации
+  - name: Admin
+    description: Все пути для администратора
+  - name: News
+    description: Все пути для новостей
+  - name: Canteen
+    description: Все пути для столовой
+paths:
+  /authtorize:
+    post:
+      summary: Войти в ОРИОКС
+      tags:
+        - Authorize
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                  description: Имя пользователя для входа
+                password:
+                  type: string
+                  format: password
+                  description: Пароль для входа
+                token:
+                  type: string
+                  description: Токен пользователя (опционально)
+      responses:
+        '201':
+          description: Пользователь вошёл в ОРИОКС
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  full_name:
+                    type: string
+                    description: Полное имя пользователя
+                  group:
+                    type: string
+                    description: Группа пользователя
+                  token:
+                    type: string
+                    description: Токен аутентификации пользователя
+        '500':
+          description: Пользователь не вошёл в ОРИОКС
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Описание ошибки
+  /admin:
+    post:
+      summary: Проверить является ли пользователь админом
+      tags:
+        - Admin
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user:
+                  type: string
+                  description: ОРИОКС ID пользователя
+      responses:
+        '201':
+          description: Пользователь - админ
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    description: Результат
+  /news:
+    post:
+      summary: Добавить новость
+      tags:
+        - News
+      parameters:
+        - name: Acctoken
+          in: header
+          description: Токен доступа
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                img:
+                  type: string
+                title:
+                  type: string
+                content:
+                  type: string
+      responses:
+        '201':
+          description: Новость успешно добавлена
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+        '500':
+          description: Возникла ошибка
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+  /news/{id}:
+    get:
+      summary: Получить последние 10 новостей
+      tags:
+        - News
+      parameters:
+        - name: id
+          in: path
+          description: ID новости
+          required: true
+          schema:
+            type: integer
+        - name: Acctoken
+          in: header
+          description: Токен доступа
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Успешный ответ
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    img:
+                      type: string
+                    title:
+                      type: string
+                    content:
+                      type: string
+    put:
+      summary: Обновить новость
+      tags:
+        - News
+      parameters:
+        - name: id
+          in: path
+          description: ID новости
+          required: true
+          schema:
+            type: integer
+        - name: Acctoken
+          in: header
+          description: Токен доступа
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                img:
+                  type: string
+                title:
+                  type: string
+                content:
+                  type: string
+      responses:
+        '201':
+          description: Новость успешно обновлена
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+        '500':
+          description: Возникла ошибка
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+    delete:
+      summary: Удалить новость
+      tags:
+        - News
+      parameters:
+        - name: id
+          in: path
+          description: ID новости
+          required: true
+          schema:
+            type: integer
+        - name: Acctoken
+          in: header
+          description: Токен доступа
+          required: true
+          schema:
+            type: string
+      responses:
+        '201':
+          description: Новость успешно удалена
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+        '404':
+          description: Возникла ошибка
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+  /canteen:
+    get:
+      summary: Получить все блюда
+      tags:
+        - Canteen
+      parameters:
+        - name: Acctoken
+          in: header
+          description: Токен доступа
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Успешный ответ
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    img:
+                      type: string
+                    title:
+                      type: string
+                    price:
+                      type: string
+                    type:
+                      type: string
+    post:
+      summary: Добавить блюдо
+      tags:
+        - Canteen
+      parameters:
+        - name: Acctoken
+          in: header
+          description: Токен доступа
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                img:
+                  type: string
+                title:
+                  type: string
+                price:
+                  type: string
+                type:
+                  type: string
+      responses:
+        '201':
+          description: Блюдо успешно добавлено
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+        '500':
+          description: Возникла ошибка
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+  /canteen/{id}:
+    put:
+      summary: Обновить блюдо
+      tags:
+        - Canteen
+      parameters:
+        - name: id
+          in: path
+          description: ID блюда
+          required: true
+          schema:
+            type: integer
+        - name: Acctoken
+          in: header
+          description: Токен доступа
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                img:
+                  type: string
+                title:
+                  type: string
+                price:
+                  type: string
+                type:
+                  type: string
+      responses:
+        '201':
+          description: Блюдо успешно обновлено
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+        '500':
+          description: Возникла ошибка
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+    delete:
+      summary: Удалить блюдо
+      tags:
+        - Canteen
+      parameters:
+        - name: id
+          in: path
+          description: ID блюда
+          required: true
+          schema:
+            type: integer
+        - name: Acctoken
+          in: header
+          description: Токен доступа
+          required: true
+          schema:
+            type: string
+      responses:
+        '201':
+          description: Блюдо успешно удалено
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+        '404':
+          description: Возникла ошибка
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string

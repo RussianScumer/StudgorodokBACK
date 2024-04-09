@@ -21,10 +21,10 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::post('/authtorize', [AuthOrioksController::class, 'store']);
 
-Route::get('/news', [\App\Http\Controllers\Api\NewsController::class, 'index']);
+Route::get('/news', [\App\Http\Controllers\Api\NewsController::class, 'index'])->middleware('acctoken');
 Route::post('/news', [\App\Http\Controllers\Api\NewsController::class, 'store'])->middleware('acctoken');
 Route::put('/news/{id}', [\App\Http\Controllers\Api\NewsController::class, 'update'])->middleware('acctoken');
-Route::get('/news/{id}', [\App\Http\Controllers\Api\NewsController::class, 'show']);
+Route::get('/news/{id}', [\App\Http\Controllers\Api\NewsController::class, 'show'])->middleware('acctoken');
 Route::delete('/news/{id}', [\App\Http\Controllers\Api\NewsController::class, 'destroy'])->middleware('acctoken');
 
 Route::get('/barter', [\App\Http\Controllers\Api\BarterController::class, 'index']);
@@ -33,10 +33,9 @@ Route::put('/barter/{id}', [\App\Http\Controllers\Api\BarterController::class, '
 Route::get('/barter/{id}', [\App\Http\Controllers\Api\BarterController::class, 'show']);
 Route::delete('/barter/{id}', [\App\Http\Controllers\Api\BarterController::class, 'destroy'])->middleware('acctoken');
 
-Route::get('/canteen', [\App\Http\Controllers\Api\CanteenController::class, 'index']);
+Route::get('/canteen', [\App\Http\Controllers\Api\CanteenController::class, 'index'])->middleware('acctoken');
 Route::post('/canteen', [\App\Http\Controllers\Api\CanteenController::class, 'store'])->middleware('acctoken');
 Route::put('/canteen/{id}', [\App\Http\Controllers\Api\CanteenController::class, 'update'])->middleware('acctoken');
-Route::get('/canteen/{id}', [\App\Http\Controllers\Api\CanteenController::class, 'show']);
 Route::delete('/canteen/{id}', [\App\Http\Controllers\Api\CanteenController::class, 'destroy'])->middleware('acctoken');
 
 Route::post('/admin', [\App\Http\Controllers\Api\AdminsController::class, 'index']);

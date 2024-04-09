@@ -4,8 +4,10 @@ namespace App\Http\Controllers\Api;
 
 use App\Models\News;
 use DateTime;
+use http\Env\Response;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
+use PHPUnit\Exception;
 
 class NewsController extends Controller
 {
@@ -22,16 +24,21 @@ class NewsController extends Controller
      */
     public function store(Request $request): \Illuminate\Http\JsonResponse
     {
-        $news = new News();
-        $news->title = $request->get("title");
-        $news->content = $request->get("content");
-        $news->img = $request->get("img");
-        $news->setImage($news, $request);
-        $currentDateTime = new DateTime('now');
-        $currentDate = $currentDateTime->format('Y-m-d');
-        $news->dateOfNews = $currentDate;
-        $news->save();
-        return response()->json(['status' => 'success']);
+        try {
+            $news = new News();
+            $news->title = $request->get("title");
+            $news->content = $request->get("content");
+            $news->img = $request->get("img");
+            $news->setImage($news, $request);
+            $currentDateTime = new DateTime('now');
+            $currentDate = $currentDateTime->format('Y-m-d');
+            $news->dateOfNews = $currentDate;
+            $news->save();
+            return response()->json(['status' => 'success']);
+        }
+        catch (\Exception) {
+            return response()->json(['status' => 'fail'], 500);
+        }
     }
 
     /**
@@ -51,21 +58,26 @@ class NewsController extends Controller
      */
     public function update(Request $request, string $id): \Illuminate\Http\JsonResponse
     {
-        $news = News::find($id);
-        $news->title = $request->get("title");
-        if ($request->get("img") != "unchanged") {
-            if (!empty($news->img)) {
-                $news->deleteImage($news);
+        try {
+            $news = News::find($id);
+            $news->title = $request->get("title");
+            if ($request->get("img") != "unchanged") {
+                if (!empty($news->img)) {
+                    $news->deleteImage($news);
+                }
+                $news->img = $request->get("img");
+                $news->setImage($news, $request);
             }
-            $news->img = $request->get("img");
-            $news->setImage($news, $request);
+            $currentDateTime = new DateTime('now');
+            $currentDate = $currentDateTime->format('Y-m-d');
+            $news->dateOfNews = $currentDate;
+            $news->content = $request->get("content");
+            $news->save();
+            return response()->json(['status' => 'success']);
         }
-        $currentDateTime = new DateTime('now');
-        $currentDate = $currentDateTime->format('Y-m-d');
-        $news->dateOfNews = $currentDate;
-        $news->content = $request->get("content");
-        $news->save();
-        return response()->json(['status' => 'success']);
+        catch (\Exception) {
+            return response()->json(['status' => 'fail'], 500);
+        }
     }
 
     /**

@@ -23,23 +23,19 @@ class CanteenController extends Controller
     //	title+	type+	price+	img+
     public function store(Request $request): \Illuminate\Http\JsonResponse
     {
-        $canteen = new Canteen();
-        $canteen->title = $request->get("title");
-        $canteen->price = $request->get("price");
-        $canteen->type = $request->get("type");
-        $canteen->img = $request->get("img");
-        $canteen->setImage($canteen, $request);
-        $canteen->save();
-        return response()->json(['status' => 'success']);
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id): \Illuminate\Http\JsonResponse
-    {
-        $canteen = Canteen::find($id);
-        return response()->json(['status' => 'success']);
+        try {
+            $canteen = new Canteen();
+            $canteen->title = $request->get("title");
+            $canteen->price = $request->get("price");
+            $canteen->type = $request->get("type");
+            $canteen->img = $request->get("img");
+            $canteen->setImage($canteen, $request);
+            $canteen->save();
+            return response()->json(['status' => 'success']);
+        }
+        catch (\Exception) {
+            return response()->json(['status' => 'fail'], 500);
+        }
     }
 
     /**
@@ -47,19 +43,24 @@ class CanteenController extends Controller
      */
     public function update(Request $request, string $id): \Illuminate\Http\JsonResponse
     {
-        $canteen = Canteen::find($id);
-        $canteen->title = $request->get("title");
-        $canteen->price = $request->get("price");
-        $canteen->type = $request->get("type");
-        if ($request->get("img") != "unchanged") {
-            if (!empty($canteen->img)) {
-                $canteen->deleteImage($canteen);
+        try {
+            $canteen = Canteen::find($id);
+            $canteen->title = $request->get("title");
+            $canteen->price = $request->get("price");
+            $canteen->type = $request->get("type");
+            if ($request->get("img") != "unchanged") {
+                if (!empty($canteen->img)) {
+                    $canteen->deleteImage($canteen);
+                }
+                $canteen->img = $request->get("img");
+                $canteen->setImage($canteen, $request);
             }
-            $canteen->img = $request->get("img");
-            $canteen->setImage($canteen, $request);
+            $canteen->save();
+            return response()->json(['status' => 'success']);
         }
-        $canteen->save();
-        return response()->json(['status' => 'success']);
+        catch (\Exception) {
+            return response()->json(['status' => 'fail'], 500);
+        }
     }
 
     /**
