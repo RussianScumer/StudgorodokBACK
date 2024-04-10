@@ -27,10 +27,10 @@ Route::put('/news/{id}', [\App\Http\Controllers\Api\NewsController::class, 'upda
 Route::get('/news/{id}', [\App\Http\Controllers\Api\NewsController::class, 'show'])->middleware('acctoken');
 Route::delete('/news/{id}', [\App\Http\Controllers\Api\NewsController::class, 'destroy'])->middleware('acctoken');
 
-Route::get('/barter', [\App\Http\Controllers\Api\BarterController::class, 'index']);
+Route::get('/barter', [\App\Http\Controllers\Api\BarterController::class, 'index'])->middleware('acctoken');
 Route::post('/barter', [\App\Http\Controllers\Api\BarterController::class, 'store'])->middleware('acctoken');
 Route::put('/barter/{id}', [\App\Http\Controllers\Api\BarterController::class, 'update'])->middleware('acctoken');
-Route::get('/barter/{id}', [\App\Http\Controllers\Api\BarterController::class, 'show']);
+Route::get('/barter/{id}', [\App\Http\Controllers\Api\BarterController::class, 'show'])->middleware('acctoken');
 Route::delete('/barter/{id}', [\App\Http\Controllers\Api\BarterController::class, 'destroy'])->middleware('acctoken');
 
 Route::get('/canteen', [\App\Http\Controllers\Api\CanteenController::class, 'index'])->middleware('acctoken');

@@ -11,7 +11,7 @@ class BarterController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(): \Illuminate\Database\Eloquent\Collection
     {
         return Barter::all();
     }
@@ -20,27 +20,30 @@ class BarterController extends Controller
      * Store a newly created resource in storage.
      */
 
-    //'title+',
-    //'comments',
-    //'contacts+',
-    //'price+',
-    //'img+',
-    //'stud_number+',
-    //'sender_name+'
-    public function store(Request $request)
+    /**
+    * 'title+',
+    * 'comments',
+    * 'contacts+',
+    * 'price+',
+    * 'img+',
+    * 'stud_number+',
+    * 'sender_name+'
+    * 'approved'
+    */
+    public function store(Request $request): \Illuminate\Http\JsonResponse
     {
         $barter = new Barter();
         $barter->title = $request->get("title");
         $barter->img = $request->get("img");
         $barter->setImage($barter, $request);
-       //////////////////////
         $barter->comments = $request->get("comments");
         $barter->contacts = $request->get("contacts");
         $barter->price = $request->get("price");
         $barter->stud_number = $request->get("stud_number");
         $barter->sender_name = $request->get("sender_name");
+        $barter->approved = false;
         $barter->save();
-        return "successful";
+        return response()->json(['status' => 'success']);
     }
 
     /**

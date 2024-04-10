@@ -23,9 +23,9 @@ class News extends Model
         $currentDateTime = new DateTime('now');
         if ($news->img != "" && $news->img != "unchanged") {
             $imgToSave = $news->img;
-            $news->img = env("APP_STORAGE_PATH") . $currentDateTime->format('Y-m-d_H-i-s') . $request->get("extension");
-            file_put_contents($this->img, base64_decode($imgToSave));
-            $news->img = env("APP_URL") . "/api/storage/" . $currentDateTime->format('Y-m-d_H-i-s') . $request->get("extension");
+            $news->img = env("APP_STORAGE_PATH") . "/news/" . $currentDateTime->format('Y-m-d_H-i-s') . $request->get("extension");
+            file_put_contents($news->img, base64_decode($imgToSave));
+            $news->img = env("APP_URL") . "/api/storage/news/" . $currentDateTime->format('Y-m-d_H-i-s') . $request->get("extension");
         } else {
             $news->img = "";
         }
@@ -33,7 +33,7 @@ class News extends Model
     public static function deleteImage($news): void
     {
         $imgToDelete = $news->img;
-        $imgToDelete = str_replace(env("APP_URL") . "/api/storage/", env("APP_STORAGE_PATH"), $imgToDelete);
+        $imgToDelete = str_replace(env("APP_URL") . "/api/storage/news/", env("APP_STORAGE_PATH") . "/news/", $imgToDelete);
         unlink($imgToDelete);
     }
 }

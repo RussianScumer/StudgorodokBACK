@@ -11,16 +11,16 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('barters', function (Blueprint $table) {
+        Schema::create('barter_adds', function (Blueprint $table) {
             $table->id()->autoIncrement();
             $table->string('title');
             $table->string('comments');
             $table->string('contacts');
-            $table->string("price");
+            $table->string('price');
             $table->string('img');
             $table->string('stud_number');
             $table->string('sender_name');
-            $table->boolean('suggested');
+            $table->boolean('approved');
             $table->timestamps();
         });
     }
@@ -30,6 +30,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('barters');
+        Schema::dropIfExists('barter_adds');
     }
 };
