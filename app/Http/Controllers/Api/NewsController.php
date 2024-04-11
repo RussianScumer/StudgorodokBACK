@@ -4,21 +4,12 @@ namespace App\Http\Controllers\Api;
 
 use App\Models\News;
 use DateTime;
-use http\Env\Response;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use PHPUnit\Exception;
 
 class NewsController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-        return News::latest()->take(10)->get();
-    }
-
     /**
      * Store a newly created resource in storage.
      */
@@ -30,9 +21,6 @@ class NewsController extends Controller
             $news->content = $request->get("content");
             $news->img = $request->get("img");
             $news->setImage($news, $request);
-            $currentDateTime = new DateTime('now');
-            $currentDate = $currentDateTime->format('Y-m-d');
-            $news->dateOfNews = $currentDate;
             $news->save();
             return response()->json(['status' => 'success']);
         }
@@ -68,9 +56,6 @@ class NewsController extends Controller
                 $news->img = $request->get("img");
                 $news->setImage($news, $request);
             }
-            $currentDateTime = new DateTime('now');
-            $currentDate = $currentDateTime->format('Y-m-d');
-            $news->dateOfNews = $currentDate;
             $news->content = $request->get("content");
             $news->save();
             return response()->json(['status' => 'success']);

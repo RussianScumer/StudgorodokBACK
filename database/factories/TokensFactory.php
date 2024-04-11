@@ -17,7 +17,7 @@ class TokensFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'acctoken' => 'test'
         ];
     }
 }

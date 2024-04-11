@@ -17,7 +17,9 @@ class NewsFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'title' => "test",
+            'content' => "test",
+            'img' => ""
         ];
     }
 }
