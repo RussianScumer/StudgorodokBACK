@@ -3,7 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\News;
-use App\Models\Tokens;
+use App\Models\User;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -23,7 +23,7 @@ class NewsTest extends TestCase
     {
         $id = 0;
         News::factory()->count(15)->create();
-        Tokens::factory()->create();
+        User::factory()->create();
         $response = $this->withHeaders([
             'Acctoken' => 'test'
         ])->get('api/news/' . $id);
@@ -39,7 +39,7 @@ class NewsTest extends TestCase
     {
         $id = 0;
         News::factory()->count(15)->create();
-        Tokens::factory()->create();
+        User::factory()->create();
         $response = $this->withHeaders([
             'Acctoken' => 'wrong'
         ])->get('api/news/' . $id);
@@ -52,7 +52,7 @@ class NewsTest extends TestCase
      */
     public function test_post_new_news(): void
     {
-        Tokens::factory()->create();
+        User::factory()->create();
 
         $response = $this->withHeaders([
             'Acctoken' => 'test'
@@ -67,7 +67,7 @@ class NewsTest extends TestCase
      */
     public function test_post_wrong_token_error(): void
     {
-        Tokens::factory()->create();
+        User::factory()->create();
 
         $response = $this->withHeaders([
             'Acctoken' => 'wrong'
@@ -81,7 +81,7 @@ class NewsTest extends TestCase
      */
     public function test_put_update_news(): void
     {
-        Tokens::factory()->create();
+        User::factory()->create();
         News::factory()->create();
         $id = DB::getPdo()->lastInsertId();
 
@@ -98,7 +98,7 @@ class NewsTest extends TestCase
      */
     public function test_put_wrong_token_error(): void
     {
-        Tokens::factory()->create();
+        User::factory()->create();
         News::factory()->create();
         $id = DB::getPdo()->lastInsertId();
 
@@ -114,7 +114,7 @@ class NewsTest extends TestCase
      */
     public function test_delete_one_news(): void
     {
-        Tokens::factory()->create();
+        User::factory()->create();
         News::factory()->create();
         $id = DB::getPdo()->lastInsertId();
 
@@ -130,7 +130,7 @@ class NewsTest extends TestCase
      */
     public function test_delete_wrong_token_error(): void
     {
-        Tokens::factory()->create();
+        User::factory()->create();
         News::factory()->create();
         $id = DB::getPdo()->lastInsertId();
 

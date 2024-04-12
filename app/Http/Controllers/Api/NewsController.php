@@ -2,83 +2,72 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Http\Resources\ApiResource;
 use App\Models\News;
-use DateTime;
+use App\Services\NewsService;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
-use PHPUnit\Exception;
 
 class NewsController extends Controller
 {
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request): \Illuminate\Http\JsonResponse
+    protected NewsService $newsService;
+
+    public function __construct(NewsService $newsService)
     {
-        try {
-            $news = new News();
-            $news->title = $request->get("title");
-            $news->content = $request->get("content");
-            $news->img = $request->get("img");
-            $news->setImage($news, $request);
-            $news->save();
-            return response()->json(['status' => 'success']);
+        $this->newsService = $newsService;
+    }
+    /**
+     * Добавить новость.
+     */
+    public function store(Request $request): ApiResource
+    {
+        $status = $this->newsService->add_news($request);
+
+        if (!$status) {
+            return new ApiResource(null, 'status', "Ошибка: нет прав для добавления новости.", 403);
         }
-        catch (\Exception) {
-            return response()->json(['status' => 'fail'], 500);
-        }
+        return new ApiResource($status, 'status', "", 201);
     }
 
     /**
-     * Display the specified resource.
+     * Вывести 10 новостей.
      */
-    public function show(string $id): string
+    public function show(Request $request): ApiResource
     {
-        if ($id == 0) {
-            return News::latest()->take(10)->get();
-        } else {
-            return News::where('id', '<', (int)$id)->orderBy('id', 'desc')->take(10)->get();
+        $news = $this->newsService->show_news($request);
+
+        if (!$news) {
+            return new ApiResource(null, 'status', "Ошибка: пользователь не авторизован.", 401);
         }
+        return new ApiResource($news, 'news', "", 200);
     }
 
     /**
-     * Update the specified resource in storage.
+     * Обновить новость.
      */
-    public function update(Request $request, string $id): \Illuminate\Http\JsonResponse
+    public function update(Request $request): ApiResource
     {
-        try {
-            $news = News::find($id);
-            $news->title = $request->get("title");
-            if ($request->get("img") != "unchanged") {
-                if (!empty($news->img)) {
-                    $news->deleteImage($news);
-                }
-                $news->img = $request->get("img");
-                $news->setImage($news, $request);
-            }
-            $news->content = $request->get("content");
-            $news->save();
-            return response()->json(['status' => 'success']);
+        $status = $this->newsService->update_news($request);
+
+        if (!$status) {
+            return new ApiResource(null, 'status', "Ошибка: нет прав для обновления новости.", 403);
         }
-        catch (\Exception) {
-            return response()->json(['status' => 'fail'], 500);
-        }
+        return new ApiResource($status, 'status', "", 200);
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Удалить новость.
      */
-    public function destroy(string $id): \Illuminate\Http\JsonResponse
+    public function destroy(Request $request): ApiResource
     {
-        $news = News::find($id);
-        if ($news) {
-            if (!empty($news->img)) {
-                $news->deleteImage($news);
-            }
-            $news->forceDelete();
-            return response()->json(['status' => 'success', 'message' => 'News successfully deleted']);
-        } else {
-            return response()->json(['status' => 'error', 'message' => 'News not found'], 404);
+        $status = $this->newsService->delete_news($request);
+
+        if (!$status) {
+            return new ApiResource(null, 'status', "Ошибка: нет прав для удаления новости.", 403);
         }
+        if ($status->status = 'fail') {
+            return new ApiResource(null, 'status', "Ошибка: новость не найдена.", 404);
+        }
+        return new ApiResource($status, 'status', "", 204);
     }
 }

@@ -1,6 +1,7 @@
 <?php
 
-use App\Http\Controllers\Api\AuthOrioksController;
+use App\Http\Controllers\Api\ApiBffController;
+use App\Http\Controllers\Api\AuthController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 /*
@@ -14,29 +15,25 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
+Route::get('/authorize', [AuthController::class, 'login'])->name('api.authorize.login');
+Route::delete('/authorize', [AuthController::class, 'quit'])->name('api.authorize.quit');
 
+Route::post('/', [ApiBffController::class, 'redirect']);
 
-Route::post('/authtorize', [AuthOrioksController::class, 'store']);
+Route::post('/news', [\App\Http\Controllers\Api\NewsController::class, 'store'])->name('api.news.store');
+Route::put('/news', [\App\Http\Controllers\Api\NewsController::class, 'update'])->name('api.news.update');
+Route::get('/news', [\App\Http\Controllers\Api\NewsController::class, 'show'])->name('api.news.show');
+Route::delete('/news', [\App\Http\Controllers\Api\NewsController::class, 'destroy'])->name('api.news.destroy');
 
-Route::post('/news', [\App\Http\Controllers\Api\NewsController::class, 'store'])->middleware('acctoken');
-Route::put('/news/{id}', [\App\Http\Controllers\Api\NewsController::class, 'update'])->middleware('acctoken');
-Route::get('/news/{id}', [\App\Http\Controllers\Api\NewsController::class, 'show'])->middleware('acctoken');
-Route::delete('/news/{id}', [\App\Http\Controllers\Api\NewsController::class, 'destroy'])->middleware('acctoken');
+Route::get('/barter', [\App\Http\Controllers\Api\BarterController::class, 'index']);
+Route::post('/barter', [\App\Http\Controllers\Api\BarterController::class, 'store']);
+Route::put('/barter/{id}', [\App\Http\Controllers\Api\BarterController::class, 'update']);
+Route::get('/barter/{id}', [\App\Http\Controllers\Api\BarterController::class, 'show']);
+Route::delete('/barter/{id}', [\App\Http\Controllers\Api\BarterController::class, 'destroy']);
 
-Route::get('/barter', [\App\Http\Controllers\Api\BarterController::class, 'index'])->middleware('acctoken');
-Route::post('/barter', [\App\Http\Controllers\Api\BarterController::class, 'store'])->middleware('acctoken');
-Route::put('/barter/{id}', [\App\Http\Controllers\Api\BarterController::class, 'update'])->middleware('acctoken');
-Route::get('/barter/{id}', [\App\Http\Controllers\Api\BarterController::class, 'show'])->middleware('acctoken');
-Route::delete('/barter/{id}', [\App\Http\Controllers\Api\BarterController::class, 'destroy'])->middleware('acctoken');
-
-Route::get('/canteen', [\App\Http\Controllers\Api\CanteenController::class, 'index'])->middleware('acctoken');
-Route::post('/canteen', [\App\Http\Controllers\Api\CanteenController::class, 'store'])->middleware('acctoken');
-Route::put('/canteen/{id}', [\App\Http\Controllers\Api\CanteenController::class, 'update'])->middleware('acctoken');
-Route::delete('/canteen/{id}', [\App\Http\Controllers\Api\CanteenController::class, 'destroy'])->middleware('acctoken');
-
-Route::post('/admin', [\App\Http\Controllers\Api\AdminsController::class, 'index']);
+Route::get('/canteen', [\App\Http\Controllers\Api\CanteenController::class, 'show'])->name('api.canteen.show');
+Route::post('/canteen', [\App\Http\Controllers\Api\CanteenController::class, 'store'])->name('api.canteen.store');
+Route::put('/canteen/{id}', [\App\Http\Controllers\Api\CanteenController::class, 'update'])->name('api.canteen.update');
+Route::delete('/canteen/{id}', [\App\Http\Controllers\Api\CanteenController::class, 'destroy'])->name('api.canteen.destroy');
 
 Route::get('/storage/{filename}', '\App\Http\Controllers\Api\StorageController@getImage')->where('filename', '(.*)');

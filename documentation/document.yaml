@@ -4,7 +4,10 @@ info:
   version: 1.0.0
 servers:
   - url: http://a0872478.xsph.ru/api
+  - url: http://127.0.0.1:8000/api
 tags:
+  - name: BFF
+    description: Один requestBody на все запросы
   - name: Authorize
     description: Все пути для авторизации
   - name: Admin
@@ -14,6 +17,123 @@ tags:
   - name: Canteen
     description: Все пути для столовой
 paths:
+  /:
+    post:
+      summary: Все виды запросов для Android приложения
+      tags:
+        - BFF
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                route:
+                  type: string
+                  description: Название пути до домена
+                  example: authorize_login
+                method:
+                  type: string
+                  description: HTTP метод
+                  example: GET
+                username:
+                  type: string
+                  description: Имя пользователя для входа
+                password:
+                  type: string
+                  format: password
+                  description: Пароль для входа
+                token:
+                  type: string
+                  description: Токен пользователя
+                title:
+                  type: string
+                  description: Название новости
+                content:
+                  type: string
+                  description: Описание новости
+                img:
+                  type: string
+                  description: Путь до картинки
+                  example: unchanged
+                id:
+                  type: integer
+                  description: ID объекта
+      responses:
+        '200':
+          description: Успешное выполнение запроса
+          content:
+            application/vnd.authorize.login+json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      acc_token:
+                        type: string
+                      is_admin:
+                        type: boolean
+                      full_name:
+                        type: string
+                      group:
+                        type: string
+                  meta:
+                    type: object
+                    properties:
+                      code:
+                        type: integer
+                        example: 200
+                  error:
+                    type: object  # Пустой объект для ошибок
+            application/vnd.authorize.quit+json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      status:
+                        type: string
+                  meta:
+                    type: object
+                    properties:
+                      code:
+                        type: integer
+                        example: 204
+                  error:
+                    type: object  # Пустой объект для ошибок
+            application/vnd.news.show+json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        title:
+                          type: string
+                        content:
+                          type: string
+                        img:
+                          type: string
+                          description: Путь до изображения
+                        updated_at:
+                          type: string
+                          format: date-time
+                          description: Время последнего обновления
+                  meta:
+                    type: object
+                    properties:
+                      code:
+                        type: integer
+                        example: 200
+                  error:
+                    type: object  # Пустой объект для ошибок
+        # TODO: Дописать news.store, news.update, news.destroy
+        # TODO: Дописать коды ошибок
   /authtorize:
     post:
       summary: Войти в ОРИОКС
@@ -89,6 +209,26 @@ paths:
                   status:
                     type: string
                     description: Результат
+        '200':
+          description: Пользователь - не админ
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    description: Результат
+        '401':
+          description: Возникла ошибка
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    description: Ошибка
   /news:
     post:
       summary: Добавить новость

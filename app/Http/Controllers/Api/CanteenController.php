@@ -12,7 +12,7 @@ class CanteenController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function show()
     {
         return Canteen::all();
     }

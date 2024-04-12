@@ -5,10 +5,9 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class OrioksUser extends Model
+class Status extends Model
 {
     use HasFactory;
-    protected $fullName;
-    protected $group;
-    protected $token;
+    private string $status;
+    private int $code = 200;
 }

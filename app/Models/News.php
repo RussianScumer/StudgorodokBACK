@@ -14,8 +14,8 @@ class News extends Model
 
     protected $fillable = [
         'title',
-        'img',
-        'content'
+        'content',
+        'img'
     ];
     public function setImage($news, $request): void
     {
