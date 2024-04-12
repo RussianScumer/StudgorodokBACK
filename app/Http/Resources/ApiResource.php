@@ -57,6 +57,7 @@ class ApiResource extends JsonResource
             'status' => $this->formatStatusData(),
             'users' => $this->formatUsersData(),
             'news' => $this->formatNewsData(),
+            'canteen' => $this->formatCanteenData(),
             default => null
         };
     }
@@ -88,7 +89,7 @@ class ApiResource extends JsonResource
                     'title' => $item->title,
                     'content' => $item->content,
                     'img' => $item->img,
-                    'updated_at' => $item->updated_at
+                    'created_at' => $item->created_at
                 ];
             }
             return $formattedData;
@@ -98,7 +99,7 @@ class ApiResource extends JsonResource
                 'title' => $this->model->title,
                 'content' => $this->model->content,
                 'img' => $this->model->img,
-                'updated_at' => $this->model->updated_at
+                'created_at' => $this->model->created_at
             ];
         }
     }
@@ -112,5 +113,33 @@ class ApiResource extends JsonResource
         return [
             'status' => $this->model->status
         ];
+    }
+
+    private function formatCanteenData(): array
+    {
+        if (!$this->model) {
+            return [];
+        }
+        // Data для Canteen
+        if ($this->model instanceof \Illuminate\Support\Collection) {
+            $formattedData = [];
+            foreach ($this->model as $item) {
+                $formattedData[] = [
+                    'title' => $item->title,
+                    'type' => $item->type,
+                    'price' => $item->price,
+                    'img' => $item->img
+                ];
+            }
+            return $formattedData;
+        }
+        else {
+            return [
+                'title' => $this->model->title,
+                'type' => $this->model->type,
+                'price' => $this->model->price,
+                'img' => $this->model->img
+            ];
+        }
     }
 }

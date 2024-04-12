@@ -21,7 +21,7 @@ class Barter extends Model
     public string $img;
     public string $sender_name;
     public bool $approved;
-    protected $table = "barter_adds";
+    protected $table = "barter";
 
     protected $fillable = [
         'title',

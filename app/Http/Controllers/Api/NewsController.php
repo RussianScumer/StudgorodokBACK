@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Resources\ApiResource;
-use App\Models\News;
 use App\Services\NewsService;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
@@ -32,14 +31,14 @@ class NewsController extends Controller
     /**
      * Вывести 10 новостей.
      */
-    public function show(Request $request): ApiResource
+    public function show(Request $request)
     {
         $news = $this->newsService->show_news($request);
 
         if (!$news) {
             return new ApiResource(null, 'status', "Ошибка: пользователь не авторизован.", 401);
         }
-        return new ApiResource($news, 'news', "", 200);
+        return $news;
     }
 
     /**
@@ -65,7 +64,7 @@ class NewsController extends Controller
         if (!$status) {
             return new ApiResource(null, 'status', "Ошибка: нет прав для удаления новости.", 403);
         }
-        if ($status->status = 'fail') {
+        if ($status->status == 'fail') {
             return new ApiResource(null, 'status', "Ошибка: новость не найдена.", 404);
         }
         return new ApiResource($status, 'status', "", 204);

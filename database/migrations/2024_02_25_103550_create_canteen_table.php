@@ -11,9 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('laundries', function (Blueprint $table) {
+        Schema::create('canteen', function (Blueprint $table) {
             $table->id()->autoIncrement();
-            $table->boolean('status');
+            $table->string('title');
+            $table->string('type');
+            $table->double("price");
+            $table->string('img');
             $table->timestamps();
         });
     }
@@ -23,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('laundries');
+        Schema::dropIfExists('canteen');
     }
 };

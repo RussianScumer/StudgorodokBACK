@@ -29,7 +29,7 @@ paths:
             schema:
               type: object
               properties:
-                route:
+                route: # Брать из ApiBffController пока что
                   type: string
                   description: Название пути до домена
                   example: authorize_login
@@ -40,19 +40,24 @@ paths:
                 username:
                   type: string
                   description: Имя пользователя для входа
+                  example: userID
                 password:
                   type: string
                   format: password
                   description: Пароль для входа
+                  example: password
                 token:
                   type: string
                   description: Токен пользователя
+                  example: null
                 title:
                   type: string
                   description: Название новости
+                  example: test
                 content:
                   type: string
                   description: Описание новости
+                  example: test
                 img:
                   type: string
                   description: Путь до картинки
@@ -60,6 +65,11 @@ paths:
                 id:
                   type: integer
                   description: ID объекта
+                  example: 0
+                cursor:
+                  type: string
+                  description: Курсор для пагинации
+                  example: null
       responses:
         '200':
           description: Успешное выполнение запроса
@@ -115,18 +125,24 @@ paths:
                       properties:
                         title:
                           type: string
+                          example: test
                         content:
                           type: string
+                          example: test
                         img:
                           type: string
                           description: Путь до изображения
-                        updated_at:
+                          example:
+                        created_at:
                           type: string
                           format: date-time
-                          description: Время последнего обновления
+                          description: Время создания новости
                   meta:
                     type: object
                     properties:
+                      cursor:
+                        type: string
+                        example: null
                       code:
                         type: integer
                         example: 200

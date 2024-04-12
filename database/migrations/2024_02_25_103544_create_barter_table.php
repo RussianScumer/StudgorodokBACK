@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('barter_adds', function (Blueprint $table) {
+        Schema::create('barter', function (Blueprint $table) {
             $table->id()->autoIncrement();
             $table->string('title');
             $table->string('comments');
@@ -30,6 +30,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('barter_adds');
+        Schema::dropIfExists('barter');
     }
 };

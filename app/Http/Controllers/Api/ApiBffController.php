@@ -38,16 +38,20 @@ class ApiBffController extends Controller
             isset($requestData['route']) && array_key_exists($requestData['route'], $routes))
         {
             $route = $routes[$requestData['route']];
-            // Перенаправляет запрос на указанный маршрут
-            $newRequest = match ($requestData['method'])
-            {
-                'GET' => Request::create(route($route), 'GET', $request->all()),
-                'POST' => Request::create(route($route), 'POST', $request->all()),
-                'PUT' => Request::create(route($route), 'PUT', $request->all()),
-                'DELETE' => Request::create(route($route), 'DELETE', $request->all()),
-                default => new ApiResource(null, 'status', 'Ошибка: не удалось определить маршрут.', 400)
-            };
-            return app()->handle($newRequest);
+            try {
+                // Перенаправляет запрос на указанный маршрут
+                $newRequest = match ($requestData['method']) {
+                    'GET' => Request::create(route($route), 'GET', $request->all()),
+                    'POST' => Request::create(route($route), 'POST', $request->all()),
+                    'PUT' => Request::create(route($route), 'PUT', $request->all()),
+                    'DELETE' => Request::create(route($route), 'DELETE', $request->all()),
+                    default => new ApiResource(null, 'status', 'Ошибка: не удалось определить маршрут.', 400)
+                };
+                return app()->handle($newRequest);
+            }
+            catch (\Exception) {
+                return new ApiResource(null, 'status', 'Ошибка: не удалось определить тип запроса или маршрут.', 404);
+            }
         } else {
             return new ApiResource(null, 'status', 'Ошибка: не удалось определить тип запроса или маршрут.', 404);
         }

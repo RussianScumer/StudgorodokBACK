@@ -2,81 +2,72 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Models\Canteen;
+use App\Http\Resources\ApiResource;
+use App\Services\CanteenService;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 
 class CanteenController extends Controller
 {
+    protected CanteenService $canteenService;
 
-    /**
-     * Display a listing of the resource.
-     */
-    public function show()
+    public function __construct(CanteenService $canteenService)
     {
-        return Canteen::all();
+        $this->canteenService = $canteenService;
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Добавить блюдо.
      */
-    //	title+	type+	price+	img+
-    public function store(Request $request): \Illuminate\Http\JsonResponse
+    public function store(Request $request): ApiResource
     {
-        try {
-            $canteen = new Canteen();
-            $canteen->title = $request->get("title");
-            $canteen->price = $request->get("price");
-            $canteen->type = $request->get("type");
-            $canteen->img = $request->get("img");
-            $canteen->setImage($canteen, $request);
-            $canteen->save();
-            return response()->json(['status' => 'success']);
+        $status = $this->canteenService->add_dish($request);
+
+        if (!$status) {
+            return new ApiResource(null, 'status', "Ошибка: нет прав для добавления блюда.", 403);
         }
-        catch (\Exception) {
-            return response()->json(['status' => 'fail'], 500);
-        }
+        return new ApiResource($status, 'status', "", 201);
     }
 
     /**
-     * Update the specified resource in storage.
+     * Вывести всё меню.
      */
-    public function update(Request $request, string $id): \Illuminate\Http\JsonResponse
+    public function show(Request $request): ApiResource
     {
-        try {
-            $canteen = Canteen::find($id);
-            $canteen->title = $request->get("title");
-            $canteen->price = $request->get("price");
-            $canteen->type = $request->get("type");
-            if ($request->get("img") != "unchanged") {
-                if (!empty($canteen->img)) {
-                    $canteen->deleteImage($canteen);
-                }
-                $canteen->img = $request->get("img");
-                $canteen->setImage($canteen, $request);
-            }
-            $canteen->save();
-            return response()->json(['status' => 'success']);
+        $canteen = $this->canteenService->show_menu($request);
+
+        if (!$canteen) {
+            return new ApiResource(null, 'status', "Ошибка: пользователь не авторизован.", 401);
         }
-        catch (\Exception) {
-            return response()->json(['status' => 'fail'], 500);
-        }
+        return new ApiResource($canteen, 'canteen', "", 200);
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Обновить блюдо.
      */
-    public function destroy(string $id): \Illuminate\Http\JsonResponse
+    public function update(Request $request): ApiResource
     {
-        $canteen = Canteen::find($id);
-        if ($canteen) {
-            if (!empty($canteen->img)) {
-                $canteen->deleteImage($canteen);
-            }
-            $canteen->forceDelete();
-            return response()->json(['status' => 'success', 'message' => 'Dish successfully deleted']);
-        } else {
-            return response()->json(['status' => 'error', 'message' => 'Dish not found'], 404);
+        $status = $this->canteenService->update_dish($request);
+
+        if (!$status) {
+            return new ApiResource(null, 'status', "Ошибка: нет прав для обновления блюда.", 403);
         }
+        return new ApiResource($status, 'status', "", 200);
+    }
+
+    /**
+     * Удалить блюдо.
+     */
+    public function destroy(Request $request): ApiResource
+    {
+        $status = $this->canteenService->delete_dish($request);
+
+        if (!$status) {
+            return new ApiResource(null, 'status', "Ошибка: нет прав для удаления блюда.", 403);
+        }
+        if ($status->status == 'fail') {
+            return new ApiResource(null, 'status', "Ошибка: блюдо не найдено.", 404);
+        }
+        return new ApiResource($status, 'status', "", 204);
     }
 }

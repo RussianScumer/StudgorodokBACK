@@ -5,12 +5,13 @@ namespace App\Models;
 use DateTime;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use PhpParser\Node\Expr\Cast\Double;
 
 class Canteen extends Model
 {
     use HasFactory;
 
-    protected $table = "canteens";
+    protected $table = "canteen";
 ///	id	title	type	price	img	created_at	updated_at
     protected $fillable = [
         'title',
@@ -18,6 +19,9 @@ class Canteen extends Model
         'price',
         'img'
     ];
+    protected string $title;
+    protected string $type;
+    protected double $price;
     public function setImage($canteen, $request): void
     {
         $currentDateTime = new DateTime('now');

@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Http\Resources\NewsResource;
 use App\Models\News;
 use App\Models\Status;
 use App\Models\User;
@@ -32,17 +33,22 @@ class NewsService
         }
     }
 
-    public function show_news($request)
+    public function show_news($request): ?\Illuminate\Http\JsonResponse
     {
         if (User::where("acc_token", $request->input('token'))->exists()) {
-            $id = $request->input('id');
-            if ($id == 0) {
-                return News::latest()->take(10)->get();
-            } else {
-                return News::where('id', '<', (int)$id)->orderBy('id', 'desc')->take(10)->get();
+            $paginator = News::orderBy("id", "desc")->cursorPaginate(10);
+            $array = [];
+            foreach ($paginator->items() as $item) {
+                $array[] = new NewsResource($item);
             }
-        }
-        else {
+            return response()->json([
+                "data" => $array,
+                "meta" => [
+                    "pagination" => ["next_url" => $paginator->nextPageUrl()],
+                    "code" => 200
+                    ]
+            ]);
+        } else {
             return null;
         }
     }
@@ -89,11 +95,10 @@ class NewsService
                     }
                     $news->forceDelete();
                     $status->status = "success";
-                    return $status;
                 } else {
-                    $status->status = "fail";
-                    return $status;
+                    $status->status = 'fail';
                 }
+                return $status;
             }
             else {
                 return null;

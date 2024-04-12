@@ -17,6 +17,8 @@ class News extends Model
         'content',
         'img'
     ];
+    protected string $title;
+    protected string $content;
     public function setImage($news, $request): void
     {
         $currentDateTime = new DateTime('now');

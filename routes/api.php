@@ -2,7 +2,6 @@
 
 use App\Http\Controllers\Api\ApiBffController;
 use App\Http\Controllers\Api\AuthController;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 /*
 |--------------------------------------------------------------------------
@@ -27,13 +26,13 @@ Route::delete('/news', [\App\Http\Controllers\Api\NewsController::class, 'destro
 
 Route::get('/barter', [\App\Http\Controllers\Api\BarterController::class, 'index']);
 Route::post('/barter', [\App\Http\Controllers\Api\BarterController::class, 'store']);
-Route::put('/barter/{id}', [\App\Http\Controllers\Api\BarterController::class, 'update']);
-Route::get('/barter/{id}', [\App\Http\Controllers\Api\BarterController::class, 'show']);
-Route::delete('/barter/{id}', [\App\Http\Controllers\Api\BarterController::class, 'destroy']);
+Route::put('/barter', [\App\Http\Controllers\Api\BarterController::class, 'update']);
+Route::get('/barter', [\App\Http\Controllers\Api\BarterController::class, 'show']);
+Route::delete('/barter', [\App\Http\Controllers\Api\BarterController::class, 'destroy']);
 
 Route::get('/canteen', [\App\Http\Controllers\Api\CanteenController::class, 'show'])->name('api.canteen.show');
 Route::post('/canteen', [\App\Http\Controllers\Api\CanteenController::class, 'store'])->name('api.canteen.store');
-Route::put('/canteen/{id}', [\App\Http\Controllers\Api\CanteenController::class, 'update'])->name('api.canteen.update');
-Route::delete('/canteen/{id}', [\App\Http\Controllers\Api\CanteenController::class, 'destroy'])->name('api.canteen.destroy');
+Route::put('/canteen', [\App\Http\Controllers\Api\CanteenController::class, 'update'])->name('api.canteen.update');
+Route::delete('/canteen', [\App\Http\Controllers\Api\CanteenController::class, 'destroy'])->name('api.canteen.destroy');
 
 Route::get('/storage/{filename}', '\App\Http\Controllers\Api\StorageController@getImage')->where('filename', '(.*)');
