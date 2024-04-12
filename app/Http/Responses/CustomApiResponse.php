@@ -7,9 +7,9 @@ use Illuminate\Http\JsonResponse;
 
 class CustomApiResponse extends JsonResponse
 {
-    public function __construct($data = null, $status = 200, $headers = [], $options = 0)
+    public function __construct($data = null, $status = 200, $headers = [])
     {
-        parent::__construct($this->formatResponse($data), $status, $headers, $options);
+        parent::__construct($this->formatResponse($data), $status, $headers);
     }
 
     protected function formatResponse($data)

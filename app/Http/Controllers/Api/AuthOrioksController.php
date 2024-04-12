@@ -22,9 +22,9 @@ class AuthOrioksController extends Controller
      */
     public function store(Request $request): \Illuminate\Http\JsonResponse|OrioksUser
     {
-        $requestData = $request->all(); // Получаем все данные запроса
-        $username = $requestData['username'] ?? null; // Получаем имя пользователя
-        $password = $requestData['password'] ?? null; // Получаем пароль
+        $requestData = $request->all();
+        $username = $requestData['username'] ?? null;
+        $password = $requestData['password'] ?? null;
         $resultString = $username. ':' .$password;
         $api_url = 'https://orioks.miet.ru/api/v1/auth';
         $encoded_auth = base64_encode($resultString);
@@ -42,7 +42,7 @@ class AuthOrioksController extends Controller
         if ($tokenOrioks === false) {
             return response()->json(['error' => 'Ошибка: токен не найден.'], 500);
         } else {
-            $decoded_response = json_decode($tokenOrioks, true); // Парсинг JSON
+            $decoded_response = json_decode($tokenOrioks, true);
             if (isset($decoded_response['token'])) {
                 $headersNew = [
                     'Accept: application/json',
