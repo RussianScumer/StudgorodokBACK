@@ -15,6 +15,7 @@ class NewsController extends Controller
     {
         $this->newsService = $newsService;
     }
+
     /**
      * Добавить новость.
      */
@@ -25,19 +26,29 @@ class NewsController extends Controller
         if (!$status) {
             return new ApiResource(null, 'status', "Ошибка: нет прав для добавления новости.", 403);
         }
+
+        if ($status->status == 'fail') {
+            return new ApiResource(null, 'status', "Ошибка: не указаны все данные.", 400);
+        }
+
         return new ApiResource($status, 'status', "", 201);
     }
 
     /**
      * Вывести 10 новостей.
      */
-    public function show(Request $request)
+    public function show(Request $request): \Illuminate\Http\JsonResponse|ApiResource
     {
         $news = $this->newsService->show_news($request);
 
         if (!$news) {
             return new ApiResource(null, 'status', "Ошибка: пользователь не авторизован.", 401);
         }
+
+        if (isset(json_decode($news)['data']) && empty(json_decode($news)['data'])) {
+            return new ApiResource(null, 'status', "Ошибка: новости не найдены.", 404);
+        }
+
         return $news;
     }
 
@@ -51,6 +62,11 @@ class NewsController extends Controller
         if (!$status) {
             return new ApiResource(null, 'status', "Ошибка: нет прав для обновления новости.", 403);
         }
+
+        if ($status->status == 'fail') {
+            return new ApiResource(null, 'status', "Ошибка: не указаны все данные.", 400);
+        }
+
         return new ApiResource($status, 'status', "", 200);
     }
 
@@ -62,10 +78,10 @@ class NewsController extends Controller
         $status = $this->newsService->delete_news($request);
 
         if (!$status) {
-            return new ApiResource(null, 'status', "Ошибка: нет прав для удаления новости.", 403);
+            return new ApiResource(null, 'status', "Ошибка: новость не найдена.", 404);
         }
         if ($status->status == 'fail') {
-            return new ApiResource(null, 'status', "Ошибка: новость не найдена.", 404);
+            return new ApiResource(null, 'status', "Ошибка: нет прав для удаления новости.", 403);
         }
         return new ApiResource($status, 'status', "", 204);
     }

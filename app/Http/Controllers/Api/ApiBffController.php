@@ -22,21 +22,24 @@ class ApiBffController extends Controller
             'authorize_login' => 'api.authorize.login',
             'news_show' => 'api.news.show',
             'canteen_show' => 'api.canteen.show',
+            'barter_show_approved' => 'api.barter.show_approved',
+            'barter_show_not_approved' => 'api.barter.show_not_approved',
             // POST
             'news_store' => 'api.news.store',
             'canteen_store' => 'api.canteen.store',
+            'barter_store' => 'api.barter.store',
             // PUT
             'news_update' => 'api.news.update',
             'canteen_update' => 'api.canteen.update',
+            'barter_approve' => 'api.barter.approve',
             // DELETE
             'authorize_quit' => 'api.authorize.quit',
             'news_destroy' => 'api.news.destroy',
             'canteen_destroy' => 'api.canteen.destroy',
+            'barter_deny' => 'api.barter.destroy'
         ];
-        // TODO: Не все маршруты прописаны
         if (isset($requestData['method']) && in_array($requestData['method'], $methods) &&
-            isset($requestData['route']) && array_key_exists($requestData['route'], $routes))
-        {
+            isset($requestData['route']) && array_key_exists($requestData['route'], $routes)) {
             $route = $routes[$requestData['route']];
             try {
                 // Перенаправляет запрос на указанный маршрут
@@ -48,8 +51,7 @@ class ApiBffController extends Controller
                     default => new ApiResource(null, 'status', 'Ошибка: не удалось определить маршрут.', 400)
                 };
                 return app()->handle($newRequest);
-            }
-            catch (\Exception) {
+            } catch (\Exception) {
                 return new ApiResource(null, 'status', 'Ошибка: не удалось определить тип запроса или маршрут.', 404);
             }
         } else {

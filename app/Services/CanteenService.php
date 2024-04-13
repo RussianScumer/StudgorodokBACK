@@ -26,11 +26,12 @@ class CanteenService
                 return null;
             }
         } catch (\Exception) {
-            return null;
+            $status->status = "fail";
+            return $status;
         }
     }
 
-    public function show_menu($request)
+    public function show_menu($request): ?\Illuminate\Database\Eloquent\Collection
     {
         if (User::where("acc_token", $request->input('token'))->exists()) {
             return Canteen::all();
@@ -39,13 +40,16 @@ class CanteenService
         }
     }
 
-    public function update_dish($request)
+    public function update_dish($request): ?Status
     {
         $status = new Status();
         try {
             if (User::where("acc_token", $request->input('token'))->value('is_admin')) {
                 $id = $request->input('id');
                 $canteen = Canteen::find($id);
+                if ($canteen == null) {
+                    throw new \Exception('Объект не найден.');
+                }
                 $canteen->title = $request->get("title");
                 $canteen->price = $request->get("price");
                 $canteen->type = $request->get("type");
@@ -63,7 +67,8 @@ class CanteenService
                 return null;
             }
         } catch (\Exception) {
-            return null;
+            $status->status = "fail";
+            return $status;
         }
     }
 
@@ -80,13 +85,14 @@ class CanteenService
                     }
                     $canteen->forceDelete();
                     $status->status = "success";
+                    return $status;
                 } else {
-                    $status->status = 'fail';
+                    return null;
                 }
-                return $status;
             }
             else {
-                return null;
+                $status->status = 'fail';
+                return $status;
             }
         }
         catch (\Exception) {

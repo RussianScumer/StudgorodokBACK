@@ -13,14 +13,6 @@ class Barter extends Model
      * @var mixed|true
      */
 
-    public string $title;
-    public string $comments;
-    public string $contacts;
-    public string $price;
-    public string $stud_number;
-    public string $img;
-    public string $sender_name;
-    public bool $approved;
     protected $table = "barter";
 
     protected $fillable = [
@@ -33,6 +25,13 @@ class Barter extends Model
         'sender_name',
         'approved'
     ];
+    protected string $title;
+    protected string $comments;
+    protected string $contacts;
+    protected string $price;
+    protected string $stud_number;
+    protected string $sender_name;
+    protected bool $approved;
     public function setImage($barter, $request): void
     {
         $currentDateTime = new DateTime('now');

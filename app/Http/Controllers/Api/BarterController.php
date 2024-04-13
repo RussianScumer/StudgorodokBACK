@@ -2,86 +2,103 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Models\Barter;
+use App\Http\Resources\ApiResource;
+use App\Services\BarterService;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 
 class BarterController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index(): \Illuminate\Database\Eloquent\Collection
+    protected BarterService $barterService;
+
+    public function __construct(BarterService $barterService)
     {
-        return Barter::all();
+        $this->barterService = $barterService;
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Добавить новое объявление.
      */
-
-    /**
-    * 'title+',
-    * 'comments',
-    * 'contacts+',
-    * 'price+',
-    * 'img+',
-    * 'stud_number+',
-    * 'sender_name+'
-    * 'approved'
-    */
-    public function store(Request $request): \Illuminate\Http\JsonResponse
+    public function store(Request $request): ApiResource
     {
-        $barter = new Barter();
-        $barter->title = $request->get("title");
-        $barter->img = $request->get("img");
-        $barter->setImage($barter, $request);
-        $barter->comments = $request->get("comments");
-        $barter->contacts = $request->get("contacts");
-        $barter->price = $request->get("price");
-        $barter->stud_number = $request->get("stud_number");
-        $barter->sender_name = $request->get("sender_name");
-        $barter->approved = false;
-        $barter->save();
-        return response()->json(['status' => 'success']);
+        $status = $this->barterService->add_new_add($request);
+
+        if (!$status) {
+            return new ApiResource(null, 'status', "Ошибка: пользователь не авторизован.", 403);
+        }
+
+        if ($status->status == 'fail') {
+            return new ApiResource(null, 'status', "Ошибка: не указаны все данные.", 400);
+        }
+
+        return new ApiResource($status, 'status', "", 201);
     }
 
     /**
-     * Display the specified resource.
+     * Вывести только одобренные объявления.
      */
-    public function show(string $id)
+    public function show_approved(Request $request): \Illuminate\Http\JsonResponse|ApiResource
     {
-        $barter = Barter::find($id);
-        return "successful";
+        $barter = $this->barterService->find_approved($request);
+
+        if (!$barter) {
+            return new ApiResource(null, 'status', "Ошибка: пользователь не авторизован.", 401);
+        }
+
+        if (isset(json_decode($barter)['data']) && empty(json_decode($barter)['data'])) {
+            return new ApiResource(null, 'status', "Ошибка: объявления не найдены.", 404);
+        }
+
+        return $barter;
     }
 
     /**
-     * Update the specified resource in storage.
+     * Вывести только не одобренные объявления.
      */
-    public function update(Request $request, string $id)
+    public function show_not_approved(Request $request): \Illuminate\Http\JsonResponse|ApiResource
     {
-        $barter = Barter::find($id);
-        //return $news;
-        $barter->title = $request->get("title");
-        $barter->img = $request->get("img");
-        $barter->setImage($barter, $request);
-        //////////////////////
-        $barter->comments = $request->get("contacts");
-        $barter->contacts = $request->get("contacts");
-        $barter->price = $request->get("price");
-        $barter->stud_number = $request->get("stud_number");
-        $barter->sender_name = $request->get("sender_name");
-        $barter->save();
-        return "successful";
+        $barter = $this->barterService->find_not_approved($request);
+
+        if (!$barter) {
+            return new ApiResource(null, 'status', "Ошибка: пользователь не авторизован.", 401);
+        }
+
+        if (isset(json_decode($barter)['data']) && empty(json_decode($barter)['data'])) {
+            return new ApiResource(null, 'status', "Ошибка: объявления не найдены.", 404);
+        }
+
+        return $barter;
+    }
+
+    /**
+     * Установить значение approved = true
+     */
+    public function approve(Request $request): ApiResource
+    {
+        $status = $this->barterService->approve_add($request);
+
+        if (!$status) {
+            return new ApiResource(null, 'status', "Ошибка: объявление не найдено.", 404);
+        }
+        if ($status->status == 'fail') {
+            return new ApiResource(null, 'status', "Ошибка: нет прав для одобрения объявления.", 403);
+        }
+        return new ApiResource($status, 'status', "", 200);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Request $request): ApiResource
     {
-        $barter = Barter::find($id);
-        $barter->forceDelete();
-        return "successful";
+        $status = $this->barterService->deny_add($request);
+
+        if (!$status) {
+            return new ApiResource(null, 'status', "Ошибка: объявление не найдено.", 404);
+        }
+        if ($status->status == 'fail') {
+            return new ApiResource(null, 'status', "Ошибка: нет прав для отклонения объявления.", 403);
+        }
+        return new ApiResource($status, 'status', "", 204);
     }
 }

@@ -26,6 +26,11 @@ class CanteenController extends Controller
         if (!$status) {
             return new ApiResource(null, 'status', "Ошибка: нет прав для добавления блюда.", 403);
         }
+
+        if ($status->status == 'fail') {
+            return new ApiResource(null, 'status', "Ошибка: не указаны все данные.", 400);
+        }
+
         return new ApiResource($status, 'status', "", 201);
     }
 
@@ -52,6 +57,11 @@ class CanteenController extends Controller
         if (!$status) {
             return new ApiResource(null, 'status', "Ошибка: нет прав для обновления блюда.", 403);
         }
+
+        if ($status->status == 'fail') {
+            return new ApiResource(null, 'status', "Ошибка: не указаны все данные.", 400);
+        }
+
         return new ApiResource($status, 'status', "", 200);
     }
 
@@ -63,11 +73,13 @@ class CanteenController extends Controller
         $status = $this->canteenService->delete_dish($request);
 
         if (!$status) {
-            return new ApiResource(null, 'status', "Ошибка: нет прав для удаления блюда.", 403);
-        }
-        if ($status->status == 'fail') {
             return new ApiResource(null, 'status', "Ошибка: блюдо не найдено.", 404);
         }
+
+        if ($status->status == 'fail') {
+            return new ApiResource(null, 'status', "Ошибка: нет прав для удаления блюда.", 403);
+        }
+
         return new ApiResource($status, 'status', "", 204);
     }
 }

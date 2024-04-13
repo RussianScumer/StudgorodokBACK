@@ -24,11 +24,11 @@ Route::put('/news', [\App\Http\Controllers\Api\NewsController::class, 'update'])
 Route::get('/news', [\App\Http\Controllers\Api\NewsController::class, 'show'])->name('api.news.show');
 Route::delete('/news', [\App\Http\Controllers\Api\NewsController::class, 'destroy'])->name('api.news.destroy');
 
-Route::get('/barter', [\App\Http\Controllers\Api\BarterController::class, 'index']);
-Route::post('/barter', [\App\Http\Controllers\Api\BarterController::class, 'store']);
-Route::put('/barter', [\App\Http\Controllers\Api\BarterController::class, 'update']);
-Route::get('/barter', [\App\Http\Controllers\Api\BarterController::class, 'show']);
-Route::delete('/barter', [\App\Http\Controllers\Api\BarterController::class, 'destroy']);
+Route::get('/barter/approved', [\App\Http\Controllers\Api\BarterController::class, 'show_approved'])->name('api.barter.show_approved');
+Route::get('/barter/not_approved', [\App\Http\Controllers\Api\BarterController::class, 'show_not_approved'])->name('api.barter.show_not_approved');
+Route::post('/barter', [\App\Http\Controllers\Api\BarterController::class, 'store'])->name('api.barter.store');
+Route::put('/barter', [\App\Http\Controllers\Api\BarterController::class, 'approve'])->name('api.barter.approve');
+Route::delete('/barter', [\App\Http\Controllers\Api\BarterController::class, 'destroy'])->name('api.barter.destroy');
 
 Route::get('/canteen', [\App\Http\Controllers\Api\CanteenController::class, 'show'])->name('api.canteen.show');
 Route::post('/canteen', [\App\Http\Controllers\Api\CanteenController::class, 'store'])->name('api.canteen.store');

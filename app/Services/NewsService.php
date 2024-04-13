@@ -29,7 +29,8 @@ class NewsService
         }
         catch (\Exception)
         {
-            return null;
+            $status->status = 'fail';
+            return $status;
         }
     }
 
@@ -44,7 +45,7 @@ class NewsService
             return response()->json([
                 "data" => $array,
                 "meta" => [
-                    "pagination" => ["next_url" => $paginator->nextPageUrl()],
+                    "next_url" => $paginator->nextPageUrl(),
                     "code" => 200
                     ]
             ]);
@@ -60,6 +61,9 @@ class NewsService
             if (User::where("acc_token", $request->input('token'))->value('is_admin')) {
                 $id = $request->input('id');
                 $news = News::find($id);
+                if ($news == null) {
+                    throw new \Exception('Объект не найден.');
+                }
                 $news->title = $request->get("title");
                 if ($request->get("img") != "unchanged") {
                     if (!empty($news->img)) {
@@ -78,7 +82,8 @@ class NewsService
             }
         }
         catch (\Exception) {
-            return null;
+            $status->status = 'fail';
+            return $status;
         }
     }
 
@@ -95,13 +100,14 @@ class NewsService
                     }
                     $news->forceDelete();
                     $status->status = "success";
+                    return $status;
                 } else {
-                    $status->status = 'fail';
+                    return null;
                 }
-                return $status;
             }
             else {
-                return null;
+                $status->status = 'fail';
+                return $status;
             }
         }
         catch (\Exception) {
