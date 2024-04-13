@@ -20,7 +20,7 @@ class User extends Model
 
     private string $acc_token;
     private string $user_id;
-    private bool $is_admin;
+    private int $is_admin;
     private string $full_name;
     private string $group;
 

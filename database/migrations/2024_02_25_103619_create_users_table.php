@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('users', function (Blueprint $table) {
             $table->string('acc_token')->primary();
             $table->string('user_id');
-            $table->boolean('is_admin');
+            $table->integer('is_admin');
             $table->timestamps();
         });
     }

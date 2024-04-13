@@ -55,7 +55,7 @@ class AuthService
                 }
             } else {
                 $user->acc_token = $user->setToken();
-                $user->is_admin = Admin::where("users", $username)->exists();
+                $user->is_admin = Admin::where("users", $username)->exists() ? 1 : 0;
                 $user->user_id = $username;
                 $user->save();
             }
@@ -70,10 +70,15 @@ class AuthService
     {
         $status = new Status();
         try {
-            User::where("acc_token", $token)->delete();
-            $status->status = "success";
-            $status->code = "200";
-            return $status;
+            if (User::where("acc_token", $token)->exists()) {
+                User::where("acc_token", $token)->delete();
+                $status->status = "success";
+                $status->code = "200";
+                return $status;
+            }
+            else {
+                return null;
+            }
         }
         catch (\Exception)
         {
