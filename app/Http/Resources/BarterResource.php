@@ -17,7 +17,7 @@ class BarterResource extends JsonResource
         return [
             'id' => $this->id,
             'title' => $this->title,
-            'comments' => $this->comments,
+            'description' => $this->description,
             'contacts' => $this->contacts,
             'price' => $this->price,
             'stud_number' => $this->stud_number,

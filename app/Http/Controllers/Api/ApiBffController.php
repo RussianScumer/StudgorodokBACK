@@ -28,6 +28,7 @@ class ApiBffController extends Controller
             'news_store' => 'api.news.store',
             'canteen_store' => 'api.canteen.store',
             'barter_store' => 'api.barter.store',
+            'barter_store_image' => 'api.barter.store_image',
             // PUT
             'news_update' => 'api.news.update',
             'canteen_update' => 'api.canteen.update',

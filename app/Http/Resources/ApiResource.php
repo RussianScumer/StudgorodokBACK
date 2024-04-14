@@ -126,6 +126,7 @@ class ApiResource extends JsonResource
             $formattedData = [];
             foreach ($this->model as $item) {
                 $formattedData[] = [
+                    'id' => $item->id,
                     'title' => $item->title,
                     'type' => $item->type,
                     'price' => $item->price,
@@ -135,6 +136,7 @@ class ApiResource extends JsonResource
             return $formattedData;
         } else {
             return [
+                'id' => $this->model->id,
                 'title' => $this->model->title,
                 'type' => $this->model->type,
                 'price' => $this->model->price,
@@ -153,11 +155,12 @@ class ApiResource extends JsonResource
             $formattedData = [];
             foreach ($this->model as $item) {
                 $formattedData[] = [
+                    'id' => $item->id,
                     'title' => $item->title,
-                    'comments' => $item->comments,
+                    'description' => $item->description,
                     'contacts' => $item->contacts,
-                    'price' => $item->img,
-                    'stud_number' => $item->strud_number,
+                    'price' => $item->price,
+                    'stud_number' => $item->stud_number,
                     'sender_name' => $item->sender_name,
                     'approved' => $item->approved
                 ];
@@ -165,11 +168,12 @@ class ApiResource extends JsonResource
             return $formattedData;
         } else {
             return [
+                'id' => $this->model->id,
                 'title' => $this->model->title,
-                'comments' => $this->model->comments,
+                'description' => $this->model->description,
                 'contacts' => $this->model->contacts,
-                'price' => $this->model->img,
-                'stud_number' => $this->model->strud_number,
+                'price' => $this->model->price,
+                'stud_number' => $this->model->stud_number,
                 'sender_name' => $this->model->sender_name,
                 'approved' => $this->model->approved
             ];

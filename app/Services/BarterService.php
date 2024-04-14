@@ -9,23 +9,60 @@ use App\Models\User;
 
 class BarterService
 {
-    public function add_new_add($request): ?Status
+    public function add_image_to_ad($request): ?Status
+    {
+        $status = new Status();
+        try {
+            $barter = Barter::find($request->input("id"));
+            if (User::where("acc_token", $request->input('token'))->exists() &&
+                $barter->stud_number == $request->input("stud_number") &&
+                $barter->id == $request->input("id")) {
+
+                if (count(explode(" ", $barter->img)) > 5) {
+                    $status->status = 'max';
+                }
+                else {
+                    if ($request->filled("img")) {
+                        $barter->setImage($barter, $request);
+                        $barter->save();
+                        $status->status = 'success';
+                    }
+                    else {
+                        $status->status = 'fail';
+                    }
+                }
+                return $status;
+            }
+            else {
+                return null;
+            }
+        }
+        catch (\Exception) {
+            $status->status = 'fail';
+            return $status;
+        }
+    }
+    public function add_new_ad($request): ?Status
     {
         $status = new Status();
         try {
             if (User::where("acc_token", $request->input('token'))->exists()) {
                 $barter = new Barter();
                 $barter->title = $request->get("title");
-                $barter->img = $request->get("img");
-                $barter->setImage($barter, $request);
-                $barter->comments = $request->get("comments");
+                if (!$request->filled("description")) {
+                    $barter->description = "";
+                }
+                else {
+                    $barter->description = $request->get("description");
+                }
                 $barter->contacts = $request->get("contacts");
                 $barter->price = $request->get("price");
                 $barter->stud_number = $request->get("stud_number");
                 $barter->sender_name = $request->get("sender_name");
                 $barter->approved = false;
+                $barter->img = "";
                 $barter->save();
-                $status->status = "success";
+                $status->status = (string) $barter->id;
                 return $status;
             }
             else {
@@ -83,7 +120,7 @@ class BarterService
         }
     }
 
-    public function approve_add($request): ?Status
+    public function approve_ad($request): ?Status
     {
         $status = new Status();
         try {
@@ -107,11 +144,12 @@ class BarterService
         }
     }
 
-    public function deny_add($request): ?Status
+    public function deny_ad($request): ?Status
     {
         $status = new Status();
         try {
-            if (User::where("acc_token", $request->input('token'))->value('is_admin')) {
+            if (User::where("acc_token", $request->input('token'))->value('is_admin') ||
+                User::where("acc_token", $request->input('token'))->value('userid') == $request->input('stud_number')) {
                 $id = $request->input('id');
                 $barter = Barter::find($id);
                 if ($barter) {

@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('barter', function (Blueprint $table) {
             $table->id()->autoIncrement();
             $table->string('title');
-            $table->string('comments');
+            $table->string('description');
             $table->string('contacts');
             $table->string('price');
             $table->string('img');

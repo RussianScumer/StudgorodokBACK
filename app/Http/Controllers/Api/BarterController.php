@@ -21,7 +21,7 @@ class BarterController extends Controller
      */
     public function store(Request $request): ApiResource
     {
-        $status = $this->barterService->add_new_add($request);
+        $status = $this->barterService->add_new_ad($request);
 
         if (!$status) {
             return new ApiResource(null, 'status', "Ошибка: пользователь не авторизован.", 403);
@@ -29,6 +29,28 @@ class BarterController extends Controller
 
         if ($status->status == 'fail') {
             return new ApiResource(null, 'status', "Ошибка: не указаны все данные.", 400);
+        }
+
+        return new ApiResource($status, 'status', "", 201);
+    }
+
+    /**
+     * Добавить картинку к объявлению.
+     */
+    public function store_image(Request $request): ApiResource
+    {
+        $status = $this->barterService->add_image_to_ad($request);
+
+        if (!$status) {
+            return new ApiResource(null, 'status', "Ошибка: пользователь не авторизован.", 403);
+        }
+
+        if ($status->status == 'max') {
+            return new ApiResource(null, 'status', "Ошибка: максимальное количество картинок = 5.", 400);
+        }
+
+        if ($status->status == 'fail') {
+            return new ApiResource(null, 'status', "Ошибка: не указаны данные.", 400);
         }
 
         return new ApiResource($status, 'status', "", 201);
@@ -75,7 +97,7 @@ class BarterController extends Controller
      */
     public function approve(Request $request): ApiResource
     {
-        $status = $this->barterService->approve_add($request);
+        $status = $this->barterService->approve_ad($request);
 
         if (!$status) {
             return new ApiResource(null, 'status', "Ошибка: объявление не найдено.", 404);
@@ -91,7 +113,7 @@ class BarterController extends Controller
      */
     public function destroy(Request $request): ApiResource
     {
-        $status = $this->barterService->deny_add($request);
+        $status = $this->barterService->deny_ad($request);
 
         if (!$status) {
             return new ApiResource(null, 'status', "Ошибка: объявление не найдено.", 404);

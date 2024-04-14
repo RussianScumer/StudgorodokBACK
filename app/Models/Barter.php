@@ -17,7 +17,7 @@ class Barter extends Model
 
     protected $fillable = [
         'title',
-        'comments',
+        'description',
         'contacts',
         'price',
         'img',
@@ -26,7 +26,7 @@ class Barter extends Model
         'approved'
     ];
     protected string $title;
-    protected string $comments;
+    protected string $description;
     protected string $contacts;
     protected string $price;
     protected string $stud_number;
@@ -35,19 +35,31 @@ class Barter extends Model
     public function setImage($barter, $request): void
     {
         $currentDateTime = new DateTime('now');
-        if ($barter->img != "" && $barter->img != "unchanged") {
-            $imgToSave = $barter->img;
-            $barter->img = env("APP_STORAGE_PATH") . "/barter/" . $currentDateTime->format('Y-m-d_H-i-s') . $request->get("extension");
-            file_put_contents($barter->img, base64_decode($imgToSave));
-            $barter->img = env("APP_URL") . "/api/storage/barter/" . $currentDateTime->format('Y-m-d_H-i-s') . $request->get("extension");
-        } else {
-            $barter->img = "";
+        $link = $request->input("img");
+        $imageToSave = $link;
+        $link = env("APP_STORAGE_PATH") . "/barter/" . $currentDateTime->format('Y-m-d_H-i-s') . $request->get("extension");
+        file_put_contents($link, base64_decode($imageToSave));
+        $link = env("APP_URL") . "/api/storage/barter/" . $currentDateTime->format('Y-m-d_H-i-s') . $request->get("extension");
+        if (empty($barter->img)) {
+            $barter->img = $link;
+        }
+        else {
+            $barter->img = $barter->img . " " . $link;
         }
     }
-    public static function deleteImage($canteen): void
+    public static function deleteImage($barter): void
     {
-        $imgToDelete = $canteen->img;
-        $imgToDelete = str_replace(env("APP_URL") . "/api/storage/barter/", env("APP_STORAGE_PATH") . "/barter/", $imgToDelete);
-        unlink($imgToDelete);
+        if (count(explode(" ", $barter->img)) > 0) {
+            $links = explode(" ", $barter->img);
+            foreach ($links as $imgToDelete) {
+                $imgToDelete = str_replace(env("APP_URL") . "/api/storage/barter/", env("APP_STORAGE_PATH") . "/barter/", $imgToDelete);
+                unlink($imgToDelete);
+            }
+        }
+        else {
+            $imgToDelete = $barter->img;
+            $imgToDelete = str_replace(env("APP_URL") . "/api/storage/barter/", env("APP_STORAGE_PATH") . "/barter/", $imgToDelete);
+            unlink($imgToDelete);
+        }
     }
 }
