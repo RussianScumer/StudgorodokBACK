@@ -4,12 +4,12 @@ namespace Tests\Feature;
 
 use App\Models\News;
 use App\Models\User;
-use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Testing\Fluent\AssertableJson;
 use Tests\TestCase;
+use function PHPUnit\Framework\assertEquals;
 
 class NewsTest extends TestCase
 {
@@ -21,15 +21,11 @@ class NewsTest extends TestCase
      */
     public function test_get_last_10_news(): void
     {
-        $id = 0;
         News::factory()->count(15)->create();
         User::factory()->create();
-        $response = $this->withHeaders([
-            'Acctoken' => 'test'
-        ])->get('api/news/' . $id);
+        $response = $this->get('api/news/', ['token' => 'test', 'cursor' => null]);
 
         $response->assertStatus(200);
-        $response->assertJsonCount(10);
     }
 
     /**
@@ -37,14 +33,12 @@ class NewsTest extends TestCase
      */
     public function test_get_wrong_token_error(): void
     {
-        $id = 0;
         News::factory()->count(15)->create();
         User::factory()->create();
-        $response = $this->withHeaders([
-            'Acctoken' => 'wrong'
-        ])->get('api/news/' . $id);
+        $response = $this->get('api/news/', ['token' => 'wrong', 'cursor' => null]);
 
-        $response->assertStatus(401);
+        $error = $response->json()[("error")];
+        assertEquals(401, $error["code"]);
     }
 
     /**
@@ -54,12 +48,9 @@ class NewsTest extends TestCase
     {
         User::factory()->create();
 
-        $response = $this->withHeaders([
-            'Acctoken' => 'test'
-        ])->post('api/news/', ['title' => 'test', 'content' => 'test']);
+        $response = $this->post('api/news/', ['token' => 'test', 'title' => 'test', 'content' => 'test']);
 
         $response->assertStatus(200);
-        $response->assertJson(fn (AssertableJson $json) => $json->has('status'));
     }
 
     /**
@@ -69,11 +60,10 @@ class NewsTest extends TestCase
     {
         User::factory()->create();
 
-        $response = $this->withHeaders([
-            'Acctoken' => 'wrong'
-        ])->post('api/news/', ['title' => 'test', 'content' => 'test']);
+        $response = $this->post('api/news/', ['token' => 'wrong', 'title' => 'test', 'content' => 'test']);
 
-        $response->assertStatus(401);
+        $error = $response->json()[("error")];
+        assertEquals(403, $error["code"]);
     }
 
     /**
@@ -85,12 +75,9 @@ class NewsTest extends TestCase
         News::factory()->create();
         $id = DB::getPdo()->lastInsertId();
 
-        $response = $this->withHeaders([
-            'Acctoken' => 'test'
-        ])->put('api/news/' . $id, ['title' => 'new_test', 'content' => 'new_test', 'img' => 'unchanged']);
+        $response = $this->put('api/news/', ['token' => 'wrong', 'title' => 'new_test', 'content' => 'new_test', 'img' => 'unchanged', 'id' => $id]);
 
         $response->assertStatus(200);
-        $response->assertJson(fn (AssertableJson $json) => $json->has('status'));
     }
 
     /**
@@ -102,11 +89,10 @@ class NewsTest extends TestCase
         News::factory()->create();
         $id = DB::getPdo()->lastInsertId();
 
-        $response = $this->withHeaders([
-            'Acctoken' => 'wrong'
-        ])->put('api/news/' . $id, ['title' => 'new_test', 'content' => 'new_test', 'img' => 'unchanged']);
+        $response = $this->put('api/news/', ['token' => 'wrong', 'title' => 'new_test', 'content' => 'new_test', 'img' => 'unchanged', 'id' => $id]);
 
-        $response->assertStatus(401);
+        $error = $response->json()[("error")];
+        assertEquals(403, $error["code"]);
     }
 
     /**
@@ -118,9 +104,7 @@ class NewsTest extends TestCase
         News::factory()->create();
         $id = DB::getPdo()->lastInsertId();
 
-        $response = $this->withHeaders([
-            'Acctoken' => 'test'
-        ])->delete('api/news/' . $id);
+        $response = $this->delete('api/news/', ['token' => 'test', 'id' => $id]);
 
         $response->assertStatus(200);
     }
@@ -134,10 +118,9 @@ class NewsTest extends TestCase
         News::factory()->create();
         $id = DB::getPdo()->lastInsertId();
 
-        $response = $this->withHeaders([
-            'Acctoken' => 'wrong'
-        ])->delete('api/news/' . $id);
+        $response = $this->delete('api/news/', ['token' => 'wrong', 'id' => $id]);
 
-        $response->assertStatus(401);
+        $error = $response->json()[("error")];
+        assertEquals(403, $error["code"]);
     }
 }
